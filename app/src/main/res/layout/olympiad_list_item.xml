@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tv_problem_data"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="4mm"/>
+    <io.github.kexanie.library.MathView
+        android:id="@+id/formula_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:engine="MathJax"
+        >
+    </io.github.kexanie.library.MathView>
+
+    <io.github.kexanie.library.MathView
+        android:id="@+id/formula_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:engine="KaTeX"
+        >
+    </io.github.kexanie.library.MathView>
+
+
+    <!--This View serves as a visual divider between list items-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#dadada"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" />
+</LinearLayout>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "99938698503",
+    "firebase_url": "https://mathpro-c58e7.firebaseio.com",
+    "project_id": "mathpro-c58e7",
+    "storage_bucket": "mathpro-c58e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99938698503:android:e53b85c666a969d0",
+        "android_client_info": {
+          "package_name": "ca.javajeff.mathpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99938698503-paqfac13ropisghek3enrkbj5t8jntlh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.javajeff.mathpro",
+            "certificate_hash": "5c04b7cecf10ca293b8f3e20eceb711278a9eed2"
+          }
+        },
+        {
+          "client_id": "99938698503-cp5smiabbk3fnacdciccc9c6jrup3kgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg6ZwjcZeICZC0OMV3XA47EC6BL15qTgA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "99938698503-cp5smiabbk3fnacdciccc9c6jrup3kgt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
