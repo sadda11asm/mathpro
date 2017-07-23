@@ -2,6 +2,7 @@ package ca.javajeff.mathpro;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,7 @@ import static android.widget.Toast.LENGTH_SHORT;
     public class MainActivity extends AppCompatActivity implements OlympiadAdapter.OlympiadAdapterOnClickHandler {
 
 
-        public ArrayList<String> Data = new ArrayList<String>();
+        public String[] Data = new String[7];
         public String olympiad;
         private FirebaseDatabase mFirebaseDatabase;
         private DatabaseReference myRef;
@@ -68,6 +69,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             myRef = mFirebaseDatabase.getReference();
+
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -162,7 +164,7 @@ import static android.widget.Toast.LENGTH_SHORT;
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
         }
 
-        public class FetchProblemTask extends AsyncTask<String, Void, ArrayList<String>> {
+        public class FetchProblemTask extends AsyncTask<String, Void, String[]> {
 
             @Override
             protected void onPreExecute() {
@@ -171,24 +173,32 @@ import static android.widget.Toast.LENGTH_SHORT;
             }
 
             @Override
-            protected ArrayList<String> doInBackground(String... params) {
+            protected String[] doInBackground(String... params) {
 
             /* If there's no zip code, there's nothing to look up. */
                 if (params.length == 0) {
                     return null;
                 }
+                for (int index = 0; index < 6; index ++) {
+                    DatabaseReference indexx = myRef.child(String.valueOf(index));// types of olympiad
+                    DatabaseReference indexxx = indexx.child(String.valueOf(0));//names of olympiad
+                    DatabaseReference indexxxx = indexxx.child(String.valueOf(1));//year of olympiad
+                    if (0 == 0) {
+                        final int finalIndex = index;
 
-                myRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        showData(dataSnapshot);
+                        indexxxx.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                showData(dataSnapshot, finalIndex);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                }
 
 //                String location = params[0];
 //                URL problemRequestUrl = NetworkUtils.buildUrl(location);
@@ -210,7 +220,7 @@ import static android.widget.Toast.LENGTH_SHORT;
             }
 
             @Override
-            protected void onPostExecute(ArrayList<String> problemData) {
+            protected void onPostExecute(String[] problemData) {
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 if (problemData != null) {
                     showProblemDataView();
@@ -219,12 +229,37 @@ import static android.widget.Toast.LENGTH_SHORT;
                     showErrorMessage();
                 }
             }
-            private void showData(DataSnapshot dataSnapshot) {
+            private void showData(DataSnapshot dataSnapshot, Integer i) {
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    OlympiadInformation olympInfo = new OlympiadInformation();
-                    olympInfo.setOlympiadType(ds.child("0").getValue(OlympiadInformation.class).getOlympiadType());
-                    Data.add(olympInfo);
-                    Log.i("Data", olympiad);
+                    String zadacha = ds.child("uslovie").getValue().toString();
+                    Data[i] += "                 " + zadacha;
+
+                    String Data2 = Data[i];
+                    boolean[] used = new boolean[100100];
+                    for (int j=1;j < Data2.length()-1;j++) {
+                        if (Data2.charAt(j) == '$' && Data2.charAt(j+1) != '$' && Data2.charAt(j-1) != '$') {
+                            used[j] = true;
+                        }
+                    }
+                    String DataNew = null;
+                    int k=0;
+                    for(int j = 0;j < Data2.length();j ++) {
+                        if(used[j]) {
+                            if (k==0) {
+                                DataNew += "\\(";
+                                k =1;
+                            }
+                            else {
+                                DataNew +="\\)";
+                                k=0;
+                            }
+                        }
+                        else{
+                            DataNew += Data2.charAt(j);
+                        }
+                    }
+                    Data[i] = DataNew + "\r\n";
+                    Log.i("dfsdf", zadacha);
                 }
             }
         }

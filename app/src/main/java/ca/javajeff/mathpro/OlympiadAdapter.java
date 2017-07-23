@@ -2,6 +2,7 @@ package ca.javajeff.mathpro;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +18,7 @@ import io.github.kexanie.library.MathView;
  */
 
 public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.OlympiadAdapterViewHolder> {
-    private ArrayList<String> mProblemData;
+    private String[] mProblemData;
 
     private final OlympiadAdapterOnClickHandler mClickHandler;
 
@@ -36,17 +37,17 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
      */
     public class OlympiadAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final TextView mProblemTextView;
 
-        MathView formula;
 
-        MathView formula_two;
+
+
+        MathView SecondFormula;
 
         public OlympiadAdapterViewHolder(View view) {
             super(view);
-            formula = (MathView) view.findViewById(R.id.formula_one);
-            mProblemTextView = (TextView) view.findViewById(R.id.tv_problem_data);
-            formula_two = (MathView) view.findViewById(R.id.formula_two);
+
+
+            SecondFormula = (MathView) view.findViewById(R.id.formula_two);
             view.setOnClickListener(this);
             // TODO (7) Call setOnClickListener on the view passed into the constructor (use 'this' as the OnClickListener)
         }
@@ -54,7 +55,7 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String problemForDay = mProblemData.get(adapterPosition);
+            String problemForDay = mProblemData[adapterPosition];
             mClickHandler.onClick(problemForDay);
         }
 
@@ -95,9 +96,11 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
      */
     @Override
     public void onBindViewHolder(OlympiadAdapterViewHolder olympiadAdapterViewHolder, int position) {
-        String problemForThisDay = mProblemData.get(position);
+        String problemForThisDay = mProblemData[position];
         //olympiadAdapterViewHolder.formula.setText(problemorThisDay);
-        olympiadAdapterViewHolder.formula_two.setText(problemForThisDay);
+        olympiadAdapterViewHolder.SecondFormula.setText(problemForThisDay);
+
+
     }
 
     /**
@@ -109,7 +112,7 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
     @Override
     public int getItemCount() {
         if (null == mProblemData) return 0;
-        return mProblemData.size();
+        return mProblemData.length;
     }
 
     /**
@@ -119,7 +122,7 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
      *
      * @param problemData The new problem data to be displayed.
      */
-    public void setProblemData(ArrayList<String> problemData) {
+    public void setProblemData(String[] problemData) {
         mProblemData = problemData;
         notifyDataSetChanged();
     }
