@@ -1,16 +1,21 @@
 package ca.javajeff.mathpro;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,56 +29,41 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ca.javajeff.mathpro.R.id.parent;
-
 /**
- * Created by Саддам on 26.07.2017.
+ * Created by Саддам on 28.07.2017.
  */
 
-public class YearActivity extends Activity implements YearAdapter.YearAdapterOnClickHandler {
+public class ListActivity extends Activity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference ProRef;
-
-
-    private RecyclerView mRecyclerView;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private YearAdapter mYearAdapter;
     private TextView mYearDisplay;
     private Spinner mSpinner;
-
     List<String> spinnerArray =  new ArrayList<String>();
     private ArrayList<String> Data = new ArrayList<String>();
     private ArrayList<String> Data2 = new ArrayList<String>();
+    private ListView list;
 
     private String keyofName;
     private String keyofType;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_year);
+        setContentView(R.layout.activity_year2);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         ProRef = mFirebaseDatabase.getReference();
 
-        mYearDisplay = (TextView) findViewById(R.id.text);
-        mSpinner = (Spinner) findViewById(R.id.spinner);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view3);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display3);
+        mYearDisplay = (TextView) findViewById(R.id.text2);
+        mSpinner = (Spinner) findViewById(R.id.spinner2);
+        list = (ListView) findViewById(R.id.list_view3);
+        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display4);
 
-
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        mRecyclerView.setHasFixedSize(true);
-
-        mYearAdapter = new YearAdapter(this);
-
-        mRecyclerView.setAdapter(mYearAdapter);
-
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator3);
+        Resources res = getResources();
 
         Bundle bundle = getIntent().getExtras();
 //        String type = bundle.getString("type");
@@ -81,10 +71,13 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         String keyFromType = bundle.getString("type");
         keyofName = keyFromName;
         keyofType = keyFromType;
-        loadProblemData(keyFromName, keyFromType);
-    }
+        Data2 = loadProblemData(keyFromName, keyFromType);
 
-    private void showData(DataSnapshot dataSnapshot) {
+
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator4);
+
+    }
+    private ArrayList<String> showData(DataSnapshot dataSnapshot) {
         mYearDisplay.setText(keyofName);
         for (DataSnapshot ds: dataSnapshot.getChildren()) {
             String key = ds.getKey();
@@ -98,6 +91,8 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             showErrorMessage();
         }
         SpinnerData();
+        return Data2;
+
     }
     private void showData2(DataSnapshot dataSnapshot) {
         if (dataSnapshot.getValue() != null) {
@@ -113,10 +108,10 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
                     doubleUsed[j] = true;
                 }
             }
-            String DataNew = "";
+            String DataNew = null;
             int k=0;
             int m =0;
-            for(int j = 0; j < DataI.length();j ++) {
+            for(int j = 0;j < DataI.length();j ++) {
                 if(used[j]) {
                     if (k==0) {
                         DataNew += "\\(";
@@ -153,15 +148,13 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (Data2 != null) {
             showProblemDataView();
-            mYearAdapter.setProblemData(Data2);
         } else {
             showErrorMessage();
         }
     }
 
-    public void firebaseData(String keyFromName, String keyFromType) {
+    public ArrayList<String> firebaseData(String keyFromName, String keyFromType) {
 //        String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
-        mLoadingIndicator.setVisibility(View.VISIBLE);
         DatabaseReference scaleOfOlympiad = ProRef.child(keyFromType).child(keyFromName);
 
 //        for (int index = 0; index < 35; index ++) {
@@ -184,9 +177,10 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         });
 //            }
 //        }
+        return Data2;
     }
 
-    public void firebaseData2(String keyFromType, String keyFromName, String keyFromYear) {
+    public ArrayList<String> firebaseData2(String keyFromType, String keyFromName, String keyFromYear) {
 //        String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
         mLoadingIndicator.setVisibility(View.VISIBLE);
         Data2.clear();
@@ -198,8 +192,8 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             indexx.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                showData2(dataSnapshot);
-            }
+                    showData2(dataSnapshot);
+                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -207,12 +201,14 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
                 }
             });
         }
+        return Data2;
     }
-    private void loadProblemData(String keyFromName, String keyFromType) {
+    private ArrayList<String> loadProblemData(String keyFromName, String keyFromType) {
         showProblemDataView();
 //        String location = "Kazakhstan, Almaty";
 //            new FetchProblemTask().execute(location);
         firebaseData(keyFromName, keyFromType);
+        return Data2;
     }
 
 
@@ -220,13 +216,13 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the problem data is visible */
-        mRecyclerView.setVisibility(View.VISIBLE);
+        list.setVisibility(View.VISIBLE);
     }
 
 
     private void showErrorMessage() {
         /* First, hide the currently visible data */
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        list.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
@@ -254,13 +250,10 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(String problemForDay) {
-//
-    }
-    private void SpinnerData() {
+
+    private ArrayList<String> SpinnerData() {
         Log.i("hhh", String.valueOf(Data.size()));
-        for (int index =Data.size()-1; index> -1;index--) {
+        for (int index =0; index<Data.size();index++) {
             spinnerArray.add(Data.get(index));
             Log.i("hhh", Data.get(index));
         }
@@ -272,11 +265,26 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selected = mSpinner.getSelectedItem().toString();
                 firebaseData2(keyofType, keyofName, selected);
+                new CountDownTimer(4000, 250) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        LlistAdapter llistAdapter = new LlistAdapter(ListActivity.this,1, Data2);
+                        list.setAdapter(llistAdapter);
+                    }
+                }.start();
             }
             @Override
             public void onNothingSelected(AdapterView parent) {
                 // Do nothing.
             }
         });
+        return Data2;
     }
 }
+
+

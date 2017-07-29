@@ -1,6 +1,8 @@
 package ca.javajeff.mathpro;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +53,8 @@ import static android.widget.Toast.LENGTH_SHORT;
     public class MainActivity extends AppCompatActivity implements OlympiadAdapter.OlympiadAdapterOnClickHandler {
 
 
-        public String[] Data = new String[7];
-        public String olympiad;
+        public String[] Data = new String[5];
+        public String[] Data2 = new String[5];
         private FirebaseDatabase mFirebaseDatabase;
         private DatabaseReference myRef;
         private RecyclerView mRecyclerView;
@@ -119,15 +121,85 @@ import static android.widget.Toast.LENGTH_SHORT;
             loadProblemData();
         }
 
+        private void showData(DataSnapshot dataSnapshot, Integer i) {
+//              for (DataSnapshot ds: dataSnapshot.getChildren()) {
+            String[] types= {"International olympiads", "Olympiads for Junior students", "National olympiads", "Team Selection Tests", "Undergraduate olympiads", "Latest contests"};
+            String key = dataSnapshot.getKey();
+            Data[i] = types[i];
+            Data2[i] = key;
+//                    String zadacha = ds.child("uslovie").getValue().toString();
+//                    Data[i] += "                 " + zadacha;
+//
+//                    String Data2 = Data[i];
+//                    boolean[] used = new boolean[100100];
+//                    for (int j=1;j < Data2.length()-1;j++) {
+//                        if (Data2.charAt(j) == '$' && Data2.charAt(j+1) != '$' && Data2.charAt(j-1) != '$') {
+//                            used[j] = true;
+//                        }
+//                    }
+//                    String DataNew = null;
+//                    int k=0;
+//                    for(int j = 0;j < Data2.length();j ++) {
+//                        if(used[j]) {
+//                            if (k==0) {
+//                                DataNew += "\\(";
+//                                k =1;
+//                            }
+//                            else {
+//                                DataNew +="\\)";
+//                                k=0;
+//                            }
+//                        }
+//                        else{
+//                            DataNew += Data2.charAt(j);
+//                        }
+//                    }
+//                    Data[i] = DataNew + "\r\n";
+            Log.i("dfsdf", Data[i]);
+//                }
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            if (Data != null) {
+                showProblemDataView();
+                mOlympiadAdapter.setProblemData(Data, Data2 );
+            } else {
+                showErrorMessage();
+            }
+        }
+
+        public void firebaseData() {
+            String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+            for (int index = 0; index < 5; index ++) {
+                DatabaseReference indexx = myRef.child(typesForBase[index]);// types of olympiad
+//                    DatabaseReference indexxx = indexx.child(String.valueOf(0));//names of olympiad
+//                    DatabaseReference indexxxx = indexxx.ch1ild(String.valueOf(1));//year of olympiad
+                if (0 == 0) {
+                    final int finalIndex = index;
+
+                    indexx.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            showData(dataSnapshot, finalIndex);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        }
+
         /**
          * This method will get the user's preferred location for problem, and then tell some
          * background method to get the problem data in the background.
          */
         private void loadProblemData() {
             showProblemDataView();
-
             String location = "Kazakhstan, Almaty";
-            new FetchProblemTask().execute(location);
+//            new FetchProblemTask().execute(location);
+            firebaseData();
         }
         @Override
         public void onClick (String problemForDay) {
@@ -164,105 +236,51 @@ import static android.widget.Toast.LENGTH_SHORT;
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
         }
 
-        public class FetchProblemTask extends AsyncTask<String, Void, String[]> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            protected String[] doInBackground(String... params) {
-
-            /* If there's no zip code, there's nothing to look up. */
-                if (params.length == 0) {
-                    return null;
-                }
-                for (int index = 0; index < 6; index ++) {
-                    DatabaseReference indexx = myRef.child(String.valueOf(index));// types of olympiad
-                    DatabaseReference indexxx = indexx.child(String.valueOf(0));//names of olympiad
-                    DatabaseReference indexxxx = indexxx.child(String.valueOf(1));//year of olympiad
-                    if (0 == 0) {
-                        final int finalIndex = index;
-
-                        indexxxx.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                showData(dataSnapshot, finalIndex);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                }
-
-//                String location = params[0];
-//                URL problemRequestUrl = NetworkUtils.buildUrl(location);
-//                Log.v("fsffs", problemRequestUrl.toString());
-//                try {
-//                    String jsonProblemResponse = NetworkUtils
-//                            .getResponseFromHttpUrl(problemRequestUrl);
+//        public class FetchProblemTask extends AsyncTask<String, Void, String[]> {
 //
-//                    String[] simpleJsonProblemData = OpenProblemJsonUtils
-//                            .getSimpleProblemStringsFromJson(MainActivity.this, jsonProblemResponse);
-//                    Log.v("ffdf", simpleJsonProblemData.toString());
-//                    return simpleJsonProblemData;
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//                mLoadingIndicator.setVisibility(View.VISIBLE);
+//            }
 //
-//                } catch (Exception e) {
-//                    e.printStackTrace();
+//            @Override
+//            protected String[] doInBackground(String... params) {
+//
+//            /* If there's no zip code, there's nothing to look up. */
+//                if (params.length == 0) {
 //                    return null;
 //                }
-                return Data;
-            }
-
-            @Override
-            protected void onPostExecute(String[] problemData) {
-                mLoadingIndicator.setVisibility(View.INVISIBLE);
-                if (problemData != null) {
-                    showProblemDataView();
-                    mOlympiadAdapter.setProblemData(problemData);
-                } else {
-                    showErrorMessage();
-                }
-            }
-            private void showData(DataSnapshot dataSnapshot, Integer i) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    String zadacha = ds.child("uslovie").getValue().toString();
-                    Data[i] += "                 " + zadacha;
-
-                    String Data2 = Data[i];
-                    boolean[] used = new boolean[100100];
-                    for (int j=1;j < Data2.length()-1;j++) {
-                        if (Data2.charAt(j) == '$' && Data2.charAt(j+1) != '$' && Data2.charAt(j-1) != '$') {
-                            used[j] = true;
-                        }
-                    }
-                    String DataNew = null;
-                    int k=0;
-                    for(int j = 0;j < Data2.length();j ++) {
-                        if(used[j]) {
-                            if (k==0) {
-                                DataNew += "\\(";
-                                k =1;
-                            }
-                            else {
-                                DataNew +="\\)";
-                                k=0;
-                            }
-                        }
-                        else{
-                            DataNew += Data2.charAt(j);
-                        }
-                    }
-                    Data[i] = DataNew + "\r\n";
-                    Log.i("dfsdf", zadacha);
-                }
-            }
-        }
+//
+////                String location = params[0];
+////                URL problemRequestUrl = NetworkUtils.buildUrl(location);
+////                Log.v("fsffs", problemRequestUrl.toString());
+////                try {
+////                    String jsonProblemResponse = NetworkUtils
+////                            .getResponseFromHttpUrl(problemRequestUrl);
+////
+////                    String[] simpleJsonProblemData = OpenProblemJsonUtils
+////                            .getSimpleProblemStringsFromJson(MainActivity.this, jsonProblemResponse);
+////                    Log.v("ffdf", simpleJsonProblemData.toString());
+////                    return simpleJsonProblemData;
+////
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                    return null;
+////                }
+//                return Data;
+//            }
+//            @Override
+//            protected void onPostExecute(String[] problemData) {
+//                mLoadingIndicator.setVisibility(View.INVISIBLE);
+//                if (problemData != null) {
+//                    showProblemDataView();
+//                    mOlympiadAdapter.setProblemData(problemData);
+//                } else {
+//                    showErrorMessage();
+//                }
+//            }
+//        }
 
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
@@ -279,12 +297,11 @@ import static android.widget.Toast.LENGTH_SHORT;
             int id = item.getItemId();
 
             if (id == R.id.action_refresh) {
-                mOlympiadAdapter.setProblemData(null);
+                mOlympiadAdapter.setProblemData(null, null);
                 loadProblemData();
                 return true;
             }
 
             return super.onOptionsItemSelected(item);
         }
-
     }

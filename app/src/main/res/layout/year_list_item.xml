@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="348dp"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="4dp"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <android.support.v7.widget.CardView xmlns:card_view3="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view3"
+        android:layout_width="344dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:background="@color/colorAliceBlue"
+        card_view3:cardBackgroundColor="@color/colorAliceBlue"
+        card_view3:cardCornerRadius="4dp"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="0dp">
+        <!--This View serves as a visual divider between list items-->
+        <io.github.kexanie.library.MathView
+            android:id="@+id/formula_two3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="5dp"
+            android:paddingRight="1dp"
+            android:paddingTop="1dp"
+            android:paddingLeft="1dp"
+            android:paddingEnd="1dp"
+            android:maxWidth="368dp"
+            android:background="#94F0F8FF"
+            android:fontFamily="Arial"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@drawable/color_selector"
+            android:textSize="8sp"
+            app:engine="MathJax"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_conversion_absoluteHeight="60dp"
+            tools:layout_conversion_absoluteWidth="324dp"
+            tools:layout_conversion_absoluteX="0dp"
+            tools:layout_conversion_absoluteY="0dp"></io.github.kexanie.library.MathView>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
