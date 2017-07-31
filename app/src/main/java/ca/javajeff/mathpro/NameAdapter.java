@@ -52,7 +52,7 @@ public class NameAdapter  extends RecyclerView.Adapter<NameAdapter.NameAdapterVi
             int adapterPosition = getAdapterPosition();
             Context context = v.getContext();
             final Intent intent;
-            intent = new Intent(context, YearActivity.class);
+            intent = new Intent(context, ListActivity.class);
             intent.putExtra("name", mProblemData.get(adapterPosition));
             intent.putExtra("type", type);
             String problemForDay = mProblemData.get(adapterPosition);

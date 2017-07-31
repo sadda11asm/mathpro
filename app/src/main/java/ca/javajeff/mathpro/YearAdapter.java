@@ -21,6 +21,7 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.YearAdapterVie
     private ArrayList<String> mProblemData = new ArrayList<String>();
 
     private final YearAdapter.YearAdapterOnClickHandler mClickHandler;
+    private String year;
 
 
     public interface YearAdapterOnClickHandler {
@@ -45,11 +46,21 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.YearAdapterVie
 
 
             SecondFormula = (MathView) view.findViewById(R.id.formula_two3);
+            view.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
-//
+            int adapterPosition = getAdapterPosition();
+            Context context = v.getContext();
+            final Intent intent;
+            intent = new Intent(context, ProblemActivity.class);
+            intent.putExtra("problem", mProblemData.get(adapterPosition));
+            intent.putExtra("year", year);
+            String problemForDay = mProblemData.get(adapterPosition);
+            mClickHandler.onClick(problemForDay);
+            context.startActivity(intent);
         }
     }
 
@@ -85,8 +96,9 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.YearAdapterVie
         return mProblemData.size();
     }
 
-    public void setProblemData(ArrayList<String> problemData) {
+    public void setProblemData(ArrayList<String> problemData, String mYear) {
         mProblemData = problemData;
+        year=mYear;
         notifyDataSetChanged();
     }
 

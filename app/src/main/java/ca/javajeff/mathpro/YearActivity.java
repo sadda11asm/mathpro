@@ -99,7 +99,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         }
         SpinnerData();
     }
-    private void showData2(DataSnapshot dataSnapshot) {
+    private void showData2(DataSnapshot dataSnapshot, String selected) {
         if (dataSnapshot.getValue() != null) {
             String value = dataSnapshot.getValue().toString();
             String DataI = value;
@@ -116,8 +116,12 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             String DataNew = "";
             int k=0;
             int m =0;
+            int pred = -2;
+            int predplus = -5;
             for(int j = 0; j < DataI.length();j ++) {
+                int notDefault = 0;
                 if(used[j]) {
+                    notDefault=1;
                     if (k==0) {
                         DataNew += "\\(";
                         k =1;
@@ -127,22 +131,41 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
                         k=0;
                     }
                 }
-                else{
-                    if (doubleUsed[j]) {
+                if (doubleUsed[j]) {
+                    notDefault=1;
                         if (m==0) {
                             DataNew +="\\(";
-                            k=1;
+                            m=1;
                         }
                         else {
                             DataNew +="\\)";
-                            k=0;
+                            m=0;
                         }
-                    } else {
-                        if (DataI.charAt(j) != '$' ) {
-                            DataNew += DataI.charAt(j);
-                        }
-                    }
                 }
+                String linebreak = "\n";
+                if (j< (DataI.length()-1) && DataI.substring(j,j+2)==linebreak) {
+                    notDefault=1;
+                    DataNew+="";
+                    pred = j;
+                }
+                if (j>0 && pred == j-1) {
+                    notDefault=1;
+                    DataNew+="";
+                }
+                String plus = "plus";
+                if (j<(DataI.length()-4) && DataI.substring(j,j+4) == plus ) {
+                    notDefault=1;
+                    predplus=j;
+                    DataNew+=" + ";
+                }
+                if (predplus == j-1 || predplus == j-2 || predplus == j-3) {
+                    notDefault=1;
+                    DataNew+="";
+                }
+                if (DataI.charAt(j) != '$' && notDefault==0) {
+                    DataNew += DataI.charAt(j);
+                }
+
             }
             value = DataNew;
             Data2.add(value);
@@ -153,7 +176,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (Data2 != null) {
             showProblemDataView();
-            mYearAdapter.setProblemData(Data2);
+            mYearAdapter.setProblemData(Data2, selected);
         } else {
             showErrorMessage();
         }
@@ -186,7 +209,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
 //        }
     }
 
-    public void firebaseData2(String keyFromType, String keyFromName, String keyFromYear) {
+    public void firebaseData2(String keyFromType, String keyFromName, String keyFromYear, final String selected) {
 //        String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
         mLoadingIndicator.setVisibility(View.VISIBLE);
         Data2.clear();
@@ -198,7 +221,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             indexx.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                showData2(dataSnapshot);
+                showData2(dataSnapshot, selected);
             }
 
                 @Override
@@ -246,7 +269,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            mYearAdapter.setProblemData(null);
+            mYearAdapter.setProblemData(null, null);
             loadProblemData(keyofName, keyofType);
             return true;
         }
@@ -271,7 +294,7 @@ public class YearActivity extends Activity implements YearAdapter.YearAdapterOnC
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String selected = mSpinner.getSelectedItem().toString();
-                firebaseData2(keyofType, keyofName, selected);
+                firebaseData2(keyofType, keyofName, selected, selected);
             }
             @Override
             public void onNothingSelected(AdapterView parent) {

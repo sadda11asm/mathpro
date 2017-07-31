@@ -2,6 +2,7 @@ package ca.javajeff.mathpro;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,7 +34,7 @@ import java.util.List;
  * Created by Саддам on 28.07.2017.
  */
 
-public class ListActivity extends Activity {
+public class ListActivity extends Activity implements LlistAdapter.ListAdapterOnClickHandler {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference ProRef;
     private TextView mErrorMessageDisplay;
@@ -94,7 +95,7 @@ public class ListActivity extends Activity {
         return Data2;
 
     }
-    private void showData2(DataSnapshot dataSnapshot) {
+    private void showData2(DataSnapshot dataSnapshot, String selected) {
         if (dataSnapshot.getValue() != null) {
             String value = dataSnapshot.getValue().toString();
             String DataI = value;
@@ -108,11 +109,15 @@ public class ListActivity extends Activity {
                     doubleUsed[j] = true;
                 }
             }
-            String DataNew = null;
+            String DataNew = "";
             int k=0;
             int m =0;
-            for(int j = 0;j < DataI.length();j ++) {
+            int pred = -2;
+            int predplus = -5;
+            for(int j = 0; j < DataI.length(); j++) {
+                int notDefault = 0;
                 if(used[j]) {
+                    notDefault=1;
                     if (k==0) {
                         DataNew += "\\(";
                         k =1;
@@ -122,22 +127,41 @@ public class ListActivity extends Activity {
                         k=0;
                     }
                 }
-                else{
-                    if (doubleUsed[j]) {
-                        if (m==0) {
-                            DataNew +="\\(";
-                            k=1;
-                        }
-                        else {
-                            DataNew +="\\)";
-                            k=0;
-                        }
-                    } else {
-                        if (DataI.charAt(j) != '$' ) {
-                            DataNew += DataI.charAt(j);
-                        }
-                    }
+//                if (doubleUsed[j]) {
+//                    notDefault=1;
+//                    if (m==0) {
+//                        DataNew +="\\(";
+//                        m=1;
+//                    }
+//                    else {
+//                        DataNew +="\\)";
+//                        m=0;
+//                    }
+//                }
+                String linebreak = "\n";
+                if (j< (DataI.length()-1) && DataI.substring(j,j+2)==linebreak) {
+                    notDefault=1;
+                    DataNew+="";
+                    pred = j;
                 }
+                if (j>0 && pred == j-1) {
+                    notDefault=1;
+                    DataNew+="";
+                }
+//                String plus = "\\plus";
+//                if (j<(DataI.length()-5) && DataI.substring(j,j+5) == plus ) {
+//                    notDefault=1;
+//                    predplus=j;
+//                    DataNew+=" + ";
+//                }
+//                if (predplus == j-1 || predplus == j-2 || predplus == j-3 || predplus == j-4) {
+//                    notDefault=1;
+//                    DataNew+="";
+//                }
+                if (notDefault==0) {
+                    DataNew += DataI.charAt(j);
+                }
+
             }
             value = DataNew;
             Data2.add(value);
@@ -180,7 +204,7 @@ public class ListActivity extends Activity {
         return Data2;
     }
 
-    public ArrayList<String> firebaseData2(String keyFromType, String keyFromName, String keyFromYear) {
+    public ArrayList<String> firebaseData2(String keyFromType, String keyFromName, final String keyFromYear) {
 //        String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
         mLoadingIndicator.setVisibility(View.VISIBLE);
         Data2.clear();
@@ -192,7 +216,7 @@ public class ListActivity extends Activity {
             indexx.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    showData2(dataSnapshot);
+                    showData2(dataSnapshot, keyFromYear);
                 }
 
                 @Override
@@ -242,7 +266,7 @@ public class ListActivity extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            mYearAdapter.setProblemData(null);
+            mYearAdapter.setProblemData(null, null);
             loadProblemData(keyofName, keyofType);
             return true;
         }
@@ -253,28 +277,47 @@ public class ListActivity extends Activity {
 
     private ArrayList<String> SpinnerData() {
         Log.i("hhh", String.valueOf(Data.size()));
-        for (int index =0; index<Data.size();index++) {
+        for (int index =Data.size()-1; index> -1;index--) {
             spinnerArray.add(Data.get(index));
             Log.i("hhh", Data.get(index));
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerArray);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, spinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
+//        mSpinner.setDropDownWidth(370);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selected = mSpinner.getSelectedItem().toString();
+            public void onItemSelected(AdapterView<?> parent, final View view, int pos, long id) {
+                final String selected = mSpinner.getSelectedItem().toString();
                 firebaseData2(keyofType, keyofName, selected);
                 new CountDownTimer(4000, 250) {
                     @Override
                     public void onTick(long millisUntilFinished) {
-
+                        list.setVisibility(View.INVISIBLE);
+                        mLoadingIndicator.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onFinish() {
-                        LlistAdapter llistAdapter = new LlistAdapter(ListActivity.this,1, Data2);
+                        mLoadingIndicator.setVisibility(View.INVISIBLE);
+                        list.setVisibility(View.VISIBLE);
+                        LlistAdapter llistAdapter = new LlistAdapter(ListActivity.this,1, Data2, ListActivity.this, selected);
                         list.setAdapter(llistAdapter);
+                        list.setItemsCanFocus(true);
+                        list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                        {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapter, View v,int position, long arg3)
+                            {
+                                Log.i("fwfsf", "fssf");
+                                Context context = view.getContext();
+                                final Intent intent;
+                                intent = new Intent(context, ProblemActivity.class);
+                                intent.putExtra("problem", Data2.get(position));
+                                intent.putExtra("year", selected);
+                                context.startActivity(intent);
+                            }
+                        });
                     }
                 }.start();
             }
@@ -284,6 +327,11 @@ public class ListActivity extends Activity {
             }
         });
         return Data2;
+    }
+
+    @Override
+    public void onClick(String problemForDay) {
+
     }
 }
 

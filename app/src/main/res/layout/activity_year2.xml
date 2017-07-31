@@ -5,26 +5,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    android:background="@drawable/backback">
-
-    <TextView
-        android:id="@+id/text2"
-        android:layout_width="423dp"
-        android:layout_height="57dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/colorPrimary"
-        android:paddingBottom="1dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
-        android:paddingTop="3dp"
-        android:textAlignment="center"
-        android:textColor="@color/colorWhite"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/colorBack">
     <TextView
         android:id="@+id/tv_error_message_display4"
         android:layout_width="wrap_content"
@@ -37,8 +18,8 @@
         tools:layout_editor_absoluteX="76dp" />
     <ProgressBar
         android:id="@+id/pb_loading_indicator4"
-        android:layout_height="42dp"
-        android:layout_width="42dp"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
         android:layout_gravity="center"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,42 +29,73 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Spinner
         android:id="@+id/spinner2"
-        android:layout_width="415dp"
-        android:layout_height="57dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
         android:layout_weight="0.06"
-        android:background="@color/colorDe"
+        android:background="@android:drawable/btn_dropdown"
         android:contextClickable="true"
+        android:dropDownWidth="370dp"
         android:elevation="2dp"
         android:gravity="center_vertical|center_horizontal"
+        android:spinnerMode="dropdown"
         android:text="@color/colorWhite"
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text2" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        android:layout_marginTop="-10dp" />
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="1dp"
+        card_view:layout_constraintLeft_toLeftOf="parent"
+        card_view:layout_constraintRight_toRightOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:background="@color/colorPrimary"
+            android:paddingBottom="1dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:paddingTop="3dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.v7.widget.CardView>
 
     <ListView
         android:id="@+id/list_view3"
-        android:layout_width="755dp"
-        android:layout_height="541dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="493dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner2"
         app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="39dp"
-        tools:layout_editor_absoluteY="121dp" />
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="77dp" />
 </android.support.constraint.ConstraintLayout>
