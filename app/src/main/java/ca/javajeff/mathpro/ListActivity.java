@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +48,7 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
     private ArrayList<String> Data = new ArrayList<String>();
     private ArrayList<String> Data2 = new ArrayList<String>();
     private ListView list;
-
+    private SwipeRefreshLayout swipeLayout;
     private String keyofName;
     private String keyofType;
 
@@ -64,6 +66,16 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
         list = (ListView) findViewById(R.id.list_view3);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display4);
 
+
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override public void onRefresh() {
+                refreshContent();
+            }
+        });
+
+
         Resources res = getResources();
 
         Bundle bundle = getIntent().getExtras();
@@ -78,6 +90,17 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator4);
 
     }
+
+    private void refreshContent(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Data2 = loadProblemData(keyofName, keyofType);
+                swipeLayout.setRefreshing(false);
+            }
+        }, 2000);
+    }
+
     private ArrayList<String> showData(DataSnapshot dataSnapshot) {
         mYearDisplay.setText(keyofName);
         for (DataSnapshot ds: dataSnapshot.getChildren()) {

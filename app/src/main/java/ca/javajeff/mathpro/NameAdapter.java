@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class NameAdapter  extends RecyclerView.Adapter<NameAdapter.NameAdapterVi
 
     private final NameAdapterOnClickHandler mClickHandler;
     private String type;
-
+    private ImageView image;
 
     public interface NameAdapterOnClickHandler {
 
@@ -42,6 +43,7 @@ public class NameAdapter  extends RecyclerView.Adapter<NameAdapter.NameAdapterVi
         public NameAdapterViewHolder(View view, Context context) {
             super(view);
 
+            image = (ImageView) view.findViewById(R.id.ima);
 
             SecondFormula = (TextView) view.findViewById(R.id.formula_two2);
             view.setOnClickListener(this);
@@ -78,6 +80,7 @@ public class NameAdapter  extends RecyclerView.Adapter<NameAdapter.NameAdapterVi
     @Override
     public void onBindViewHolder(NameAdapter.NameAdapterViewHolder nameAdapterViewHolder, int position) {
         String problemForThisDay = mProblemData.get(position);
+        image.setImageResource(R.drawable.kubok);
         //olympiadAdapterViewHolder.formula.setText(problemorThisDay);
         Log.i("fsdvs", problemForThisDay);
         nameAdapterViewHolder.SecondFormula.setText(problemForThisDay);

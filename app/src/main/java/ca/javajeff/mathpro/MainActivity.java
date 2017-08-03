@@ -1,10 +1,14 @@
 package ca.javajeff.mathpro;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.IntegerRes;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
@@ -52,7 +58,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
     public class MainActivity extends AppCompatActivity implements OlympiadAdapter.OlympiadAdapterOnClickHandler {
 
-
+        private SwipeRefreshLayout swipeLayout;
         public String[] Data = new String[5];
         public String[] Data2 = new String[5];
         private FirebaseDatabase mFirebaseDatabase;
@@ -72,7 +78,8 @@ import static android.widget.Toast.LENGTH_SHORT;
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             myRef = mFirebaseDatabase.getReference();
 
-
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            getSupportActionBar().setCustomView(R.layout.abs_layout);
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
@@ -96,6 +103,10 @@ import static android.widget.Toast.LENGTH_SHORT;
          * Use this setting to improve performance if you know that changes in content do not
          * change the child layout size in the RecyclerView
          */
+
+            swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+
+
             mRecyclerView.setHasFixedSize(true);
 
         /*
@@ -107,6 +118,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
             mRecyclerView.setAdapter(mOlympiadAdapter);
+
+            swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override public void onRefresh() {
+                    refreshContent();
+                }
+            });
 
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
@@ -121,6 +138,17 @@ import static android.widget.Toast.LENGTH_SHORT;
             loadProblemData();
         }
 
+
+        private void refreshContent(){
+             new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mOlympiadAdapter.setProblemData(null, null);
+                    loadProblemData();
+                    swipeLayout.setRefreshing(false);
+                }
+            }, 2000);
+        }
         private void showData(DataSnapshot dataSnapshot, Integer i) {
 //              for (DataSnapshot ds: dataSnapshot.getChildren()) {
             String[] types= {"International olympiads", "Olympiads for Junior students", "National olympiads", "Team Selection Tests", "Undergraduate olympiads", "Latest contests"};
@@ -157,13 +185,23 @@ import static android.widget.Toast.LENGTH_SHORT;
 //                    Data[i] = DataNew + "\r\n";
             Log.i("dfsdf", Data[i]);
 //                }
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (Data != null) {
-                showProblemDataView();
-                mOlympiadAdapter.setProblemData(Data, Data2 );
-            } else {
-                showErrorMessage();
-            }
+            new CountDownTimer(4000, 250) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    mLoadingIndicator.setVisibility(View.INVISIBLE);
+                    if (Data != null) {
+                        showProblemDataView();
+                        mOlympiadAdapter.setProblemData(Data, Data2 );
+                    } else {
+                        showErrorMessage();
+                    }
+                }
+            }.start();
         }
 
         public void firebaseData() {
@@ -282,26 +320,26 @@ import static android.widget.Toast.LENGTH_SHORT;
 //            }
 //        }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
-            MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our menu layout to this menu */
-            inflater.inflate(R.menu.settings, menu);
-        /* Return true so that the menu is displayed in the Toolbar */
-            return true;
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-
-            if (id == R.id.action_refresh) {
-                mOlympiadAdapter.setProblemData(null, null);
-                loadProblemData();
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
-        }
+//        @Override
+//        public boolean onCreateOptionsMenu(Menu menu) {
+//        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
+//            MenuInflater inflater = getMenuInflater();
+//        /* Use the inflater's inflate method to inflate our menu layout to this menu */
+//            inflater.inflate(R.menu.settings, menu);
+//        /* Return true so that the menu is displayed in the Toolbar */
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onOptionsItemSelected(MenuItem item) {
+//            int id = item.getItemId();
+//
+//            if (id == R.id.action_refresh) {
+//                mOlympiadAdapter.setProblemData(null, null);
+//                loadProblemData();
+//                return true;
+//            }
+//
+//            return super.onOptionsItemSelected(item);
+//        }
     }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -51,7 +52,6 @@ public class NameActivity extends Activity implements NameAdapter.NameAdapterOnC
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_olympiad2);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display2);
 
-
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -69,6 +69,7 @@ public class NameActivity extends Activity implements NameAdapter.NameAdapterOnC
         Bundle bundle = getIntent().getExtras();
         String type = bundle.getString("type");
         String keyFromType = bundle.getString("key1");
+
         keyof = keyFromType;
         loadProblemData(keyFromType);
         mTypeDisplay.setText(type);
