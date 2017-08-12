@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Саддам on 25.07.2017.
+ * Created by ?????? on 25.07.2017.
  */
 
 public class NameAdapter  extends RecyclerView.Adapter<NameAdapter.NameAdapterViewHolder> {

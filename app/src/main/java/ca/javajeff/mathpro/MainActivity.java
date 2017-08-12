@@ -2,19 +2,49 @@ package ca.javajeff.mathpro;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.UserHandle;
+import android.support.annotation.IntDef;
 import android.support.annotation.IntegerRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
+import android.support.annotation.StringDef;
+import android.support.annotation.StyleRes;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,17 +58,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
+//import com.facebook.AccessToken;
+//import com.facebook.CallbackManager;
+//import com.facebook.FacebookCallback;
+//import com.facebook.FacebookException;
+//import com.facebook.FacebookSdk;
+//import com.facebook.GraphRequest;
+//import com.facebook.GraphResponse;
+//import com.facebook.appevents.AppEventsLogger;
+//import com.facebook.login.LoginManager;
+//import com.facebook.login.LoginResult;
+//import com.facebook.login.widget.LoginButton;
+import com.facebook.accountkit.Account;
+import com.facebook.accountkit.AccountKit;
+import com.facebook.accountkit.AccountKitCallback;
+import com.facebook.accountkit.AccountKitError;
+import com.facebook.accountkit.PhoneNumber;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +82,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,10 +106,20 @@ import static android.widget.Toast.LENGTH_SHORT;
         private DatabaseReference myRef;
         private RecyclerView mRecyclerView;
         private OlympiadAdapter mOlympiadAdapter;
+        private DrawerLayout mDrawerLayout;
+        private ActionBarDrawerToggle mToggle;
 
         private TextView mErrorMessageDisplay;
+        public TextView header;
 
         private ProgressBar mLoadingIndicator;
+        private Toolbar mToolBar;
+        private NavigationView navigation;
+
+        public String phone;
+        public String email;
+        public String accountId;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -78,45 +129,40 @@ import static android.widget.Toast.LENGTH_SHORT;
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             myRef = mFirebaseDatabase.getReference();
 
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            getSupportActionBar().setCustomView(R.layout.abs_layout);
-        /*
-         * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
-         * do things like set the adapter of the RecyclerView and toggle the visibility.
-         */
+//            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//            getSupportActionBar().setCustomView(R.layout.abs_layout);
+
             mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_olympiad);
 
-        /* This TextView is used to display errors and will be hidden if there are no errors */
+            navigation = (NavigationView) findViewById(R.id.navigation_view);
             mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        /*
-         * LinearLayoutManager can support HORIZONTAL or VERTICAL orientations. The reverse layout
-         * parameter is useful mostly for HORIZONTAL layouts that should reverse for right to left
-         * languages.
-         */
+            mToolBar = (Toolbar) findViewById(R.id.nav_action);
+            setSupportActionBar(mToolBar);
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+            mDrawerLayout.addDrawerListener(mToggle);
+            mToggle.syncState();
+
+            header = (TextView) findViewById(R.id.header_text);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
             mRecyclerView.setLayoutManager(layoutManager);
 
-        /*
-         * Use this setting to improve performance if you know that changes in content do not
-         * change the child layout size in the RecyclerView
-         */
+
 
             swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 
 
             mRecyclerView.setHasFixedSize(true);
 
-        /*
-         * The ProblemAdapter is responsible for linking our problem data with the Views that
-         * will end up displaying our problem data.
-         */
 
             mOlympiadAdapter = new OlympiadAdapter(this);
 
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
             mRecyclerView.setAdapter(mOlympiadAdapter);
 
             swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -125,16 +171,53 @@ import static android.widget.Toast.LENGTH_SHORT;
                 }
             });
 
-        /*
-         * The ProgressBar that will indicate to the user that we are loading data. It will be
-         * hidden when no data is loading.
-         *
-         * Please note: This so called "ProgressBar" isn't a bar by default. It is more of a
-         * circle. We didn't make the rules (or the names of Views), we just follow them.
-         */
+
             mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        /* Once all of our views are setup, we can load the problem data. */
+            AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
+                @Override
+                public void onSuccess(Account account) {
+                    accountId = account.getId();
+
+                    PhoneNumber phoneNumber = account.getPhoneNumber();
+                    phone = phoneNumber.toString();
+
+                    email = account.getEmail();
+
+//                    try {
+//                        header.setText(accountId);
+//                    } catch (Exception e) {
+//                        header.setText(accountId);
+//                    }
+                }
+
+                @Override
+                public void onError(AccountKitError accountKitError) {
+                    phone = "You need to log in";
+                    email = "You need to log in";
+
+//                    try {
+//                        header.setText(phone);
+//                    } catch (Exception e) {
+//                        header.setText("ddad");
+//                    }
+                }
+            });
+
+            navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected( MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.nav_log:
+                            AccountKit.logOut();
+                            Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                            startActivity(intent);
+                            break;
+                    }
+                    return false;
+                }
+            });
+
             loadProblemData();
         }
 
@@ -330,16 +413,14 @@ import static android.widget.Toast.LENGTH_SHORT;
 //            return true;
 //        }
 //
-//        @Override
-//        public boolean onOptionsItemSelected(MenuItem item) {
-//            int id = item.getItemId();
-//
-//            if (id == R.id.action_refresh) {
-//                mOlympiadAdapter.setProblemData(null, null);
-//                loadProblemData();
-//                return true;
-//            }
-//
-//            return super.onOptionsItemSelected(item);
-//        }
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+
+            if (mToggle.onOptionsItemSelected(item)) {
+                return true;
+            }
+
+            return super.onOptionsItemSelected(item);
+        }
     }

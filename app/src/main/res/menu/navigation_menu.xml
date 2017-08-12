@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_account"
+        android:icon="@mipmap/ic_person_pin_black_24dp"
+        android:title="My account"></item>
+    <item android:id="@+id/nav_contests"
+        android:icon="@mipmap/ic_format_align_justify_black_24dp"
+        android:title="Contests"></item>
+    <item android:id="@+id/nav_solutions"
+        android:icon="@mipmap/ic_chat_bubble_black_24dp"
+        android:title="My solutions"></item>
+    <item android:id="@+id/nav_rating"
+        android:icon="@mipmap/ic_assessment_black_24dp"
+        android:title="Rating"></item>
+    <item android:id="@+id/settings"
+        android:icon="@mipmap/ic_settings_black_24dp"
+        android:title="Settings"></item>
+    <item android:id="@+id/nav_log"
+        android:icon="@mipmap/ic_exit_to_app_black_24dp"
+        android:title="Log out"></item>
+</menu>

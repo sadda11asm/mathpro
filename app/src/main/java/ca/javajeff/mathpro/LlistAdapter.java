@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import io.github.kexanie.library.MathView;
 
 /**
- * Created by Саддам on 28.07.2017.
+ * Created by ?????? on 28.07.2017.
  */
 
 public class LlistAdapter extends ArrayAdapter<String> {

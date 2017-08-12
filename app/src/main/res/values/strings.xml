@@ -3,4 +3,8 @@
     <string name="facebook_app_id">267588803721473</string>
     <string name="fb_login_protocol_scheme">fb267588803721473</string>
     <string name="error_message">\"Please try again later\"</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">2008c823744a13e9fa3994cf04b101fa</string>
+    <string name="ak_login_protocol_scheme">ak267588803721473</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>

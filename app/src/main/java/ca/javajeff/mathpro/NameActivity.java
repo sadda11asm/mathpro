@@ -45,6 +45,8 @@ public class NameActivity extends Activity implements NameAdapter.NameAdapterOnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
 
+//        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         IntRef = mFirebaseDatabase.getReference();
 

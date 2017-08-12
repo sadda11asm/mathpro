@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,7 @@ import io.github.kexanie.library.MathView;
 public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.OlympiadAdapterViewHolder> {
     private String[] mProblemData;
     private String[] mProblemData2;
+    private ImageView intern;
 
     private final OlympiadAdapterOnClickHandler mClickHandler;
 
@@ -47,43 +50,47 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
 
         public OlympiadAdapterViewHolder(View view, Context context) {
             super(view);
-            
 
+            intern = (ImageView) view.findViewById(R.id.imageView3);
             SecondFormula = (TextView) view.findViewById(R.id.formula_two);
             view.setOnClickListener(this);
             // TODO (7) Call setOnClickListener on the view passed into the constructor (use 'this' as the OnClickListener)
         }
         @Override
         public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-            Context context = v.getContext();
-            final Intent intent;
-            intent = new Intent(context, NameActivity.class);
-            switch(adapterPosition) {
-                case 0:
-                    intent.putExtra("type",mProblemData[0]);
-                    intent.putExtra("key1",mProblemData2[0]);
-                    break;
-                case 1:
-                    intent.putExtra("type",mProblemData[1]);
-                    intent.putExtra("key1",mProblemData2[1]);
-                    break;
-                case 2:
-                    intent.putExtra("type",mProblemData[2]);
-                    intent.putExtra("key1",mProblemData2[2]);
-                    break;
-                case 3:
-                    intent.putExtra("type",mProblemData[3]);
-                    intent.putExtra("key1",mProblemData2[3]);
-                    break;
-                default:
-                    intent.putExtra("type",mProblemData[4]);
-                    intent.putExtra("key1",mProblemData2[4]);
-                    break;
+            try {
+                int adapterPosition = getAdapterPosition();
+                Context context = v.getContext();
+                final Intent intent;
+                intent = new Intent(context, NameActivity.class);
+                switch (adapterPosition) {
+                    case 0:
+                        intent.putExtra("type", mProblemData[0]);
+                        intent.putExtra("key1", mProblemData2[0]);
+                        break;
+                    case 1:
+                        intent.putExtra("type", mProblemData[1]);
+                        intent.putExtra("key1", mProblemData2[1]);
+                        break;
+                    case 2:
+                        intent.putExtra("type", mProblemData[2]);
+                        intent.putExtra("key1", mProblemData2[2]);
+                        break;
+                    case 3:
+                        intent.putExtra("type", mProblemData[3]);
+                        intent.putExtra("key1", mProblemData2[3]);
+                        break;
+                    default:
+                        intent.putExtra("type", mProblemData[4]);
+                        intent.putExtra("key1", mProblemData2[4]);
+                        break;
+                }
+                String problemForDay = mProblemData[adapterPosition];
+                mClickHandler.onClick(problemForDay);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(v.getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
             }
-            String problemForDay = mProblemData[adapterPosition];
-            mClickHandler.onClick(problemForDay);
-            context.startActivity(intent);
         }
 
         // TODO (6) Override onClick, passing the clicked day's data to mClickHandler via its onClick method
@@ -126,7 +133,7 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
         String problemForThisDay = mProblemData[position];
         //olympiadAdapterViewHolder.formula.setText(problemorThisDay);
         olympiadAdapterViewHolder.SecondFormula.setText(problemForThisDay);
-
+        intern.setImageResource(R.drawable.intern);
 
     }
 

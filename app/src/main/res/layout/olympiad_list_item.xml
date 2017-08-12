@@ -31,13 +31,6 @@
 
     <!--This View serves as a visual divider between list items-->
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="97dp"
-        android:layout_height="92dp"
-        android:layout_marginTop="7.5dp"
-        app:srcCompat="@drawable/intern" />
-
     <TextView
         android:id="@+id/formula_two"
         android:layout_width="match_parent"
@@ -59,5 +52,12 @@
         tools:layout_conversion_absoluteWidth="324dp"
         tools:layout_conversion_absoluteX="0dp"
         tools:layout_conversion_absoluteY="0dp"></TextView>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="97dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="7.5dp"
+        app:srcCompat="@drawable/intern" />
 </android.support.v7.widget.CardView>
 <!--</RelativeLayout>-->

@@ -41,7 +41,6 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
     private DatabaseReference ProRef;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
-    private YearAdapter mYearAdapter;
     private TextView mYearDisplay;
     private Spinner mSpinner;
     List<String> spinnerArray =  new ArrayList<String>();
@@ -49,14 +48,16 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
     private ArrayList<String> Data2 = new ArrayList<String>();
     private ListView list;
     private SwipeRefreshLayout swipeLayout;
-    private String keyofName;
-    private String keyofType;
+    static public String keyofName;
+    static public String keyofType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_year2);
+
+//        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         ProRef = mFirebaseDatabase.getReference();
@@ -289,7 +290,6 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            mYearAdapter.setProblemData(null, null);
             loadProblemData(keyofName, keyofType);
             return true;
         }
@@ -338,6 +338,9 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
                                 intent = new Intent(context, ProblemActivity.class);
                                 intent.putExtra("problem", Data2.get(position));
                                 intent.putExtra("year", selected);
+                                intent.putExtra("name", keyofName);
+                                intent.putExtra("type", keyofType);
+                                intent.putExtra("number", String.valueOf(position+1));
                                 context.startActivity(intent);
                             }
                         });
