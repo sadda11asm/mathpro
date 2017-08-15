@@ -25,6 +25,10 @@
         <activity android:name=".ListActivity"
             android:theme="@style/AppMainTheme"
             android:screenOrientation="portrait"/>
+        <activity android:name=".AcccountInfo"
+            android:theme="@style/AppMainTheme"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".ProblemActivity"
             android:theme="@style/AppMainTheme"
             />

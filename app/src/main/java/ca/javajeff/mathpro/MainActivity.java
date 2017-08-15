@@ -110,7 +110,7 @@ import static android.widget.Toast.LENGTH_SHORT;
         private ActionBarDrawerToggle mToggle;
 
         private TextView mErrorMessageDisplay;
-        public TextView header;
+//        public TextView header;
 
         private ProgressBar mLoadingIndicator;
         private Toolbar mToolBar;
@@ -119,6 +119,10 @@ import static android.widget.Toast.LENGTH_SHORT;
         public String phone;
         public String email;
         public String accountId;
+        public String token = null;
+
+        public TextView id;
+        public ImageView idImage;
 
 
         @Override
@@ -144,7 +148,7 @@ import static android.widget.Toast.LENGTH_SHORT;
             mDrawerLayout.addDrawerListener(mToggle);
             mToggle.syncState();
 
-            header = (TextView) findViewById(R.id.header_text);
+//            header = (TextView) findViewById(R.id.header_text);
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -174,6 +178,28 @@ import static android.widget.Toast.LENGTH_SHORT;
 
             mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
+            View header=navigation.getHeaderView(0);
+            id = (TextView) header.findViewById(R.id.header_text);
+            idImage = (ImageView) header.findViewById(R.id.header_image);
+            idImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openAccountInfo();
+                }
+            });
+            String nottoken = null;
+            try {
+                token = AccountKit.getCurrentAccessToken().getAccountId();
+            } catch (Exception e) {
+                nottoken = "Log in to enter own solutions and have own rating";
+            }
+            try {
+                Toast.makeText(this, token, Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(this, nottoken, Toast.LENGTH_LONG).show();
+            }
+            final String finalToken = token;
+            final String finalNottoken = nottoken;
             AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                 @Override
                 public void onSuccess(Account account) {
@@ -184,23 +210,23 @@ import static android.widget.Toast.LENGTH_SHORT;
 
                     email = account.getEmail();
 
-//                    try {
-//                        header.setText(accountId);
-//                    } catch (Exception e) {
-//                        header.setText(accountId);
-//                    }
+                    try {
+                        id.setText(accountId);
+                    } catch (Exception e) {
+                        id.setText("000000");
+                    }
                 }
 
                 @Override
                 public void onError(AccountKitError accountKitError) {
                     phone = "You need to log in";
                     email = "You need to log in";
-
-//                    try {
-//                        header.setText(phone);
-//                    } catch (Exception e) {
-//                        header.setText("ddad");
-//                    }
+                    String toastMessage = accountKitError.getErrorType().getMessage();
+                    try {
+                       id.setText(finalToken);
+                    } catch (Exception e) {
+                        id.setText(finalNottoken);
+                    }
                 }
             });
 
@@ -210,9 +236,9 @@ import static android.widget.Toast.LENGTH_SHORT;
                     switch (item.getItemId()) {
                         case R.id.nav_log:
                             AccountKit.logOut();
-                            Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                            final Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                            intent.putExtra("logInfo", "If you need to log in again, please use the same type (phone or email)");
                             startActivity(intent);
-                            break;
                     }
                     return false;
                 }
@@ -341,6 +367,13 @@ import static android.widget.Toast.LENGTH_SHORT;
             mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the problem data is visible */
             mRecyclerView.setVisibility(View.VISIBLE);
+        }
+
+
+        public void openAccountInfo() {
+            Intent intent = new Intent(this, AcccountInfo.class);
+            intent.putExtra("id", token);
+            startActivity(intent);
         }
 
         /**

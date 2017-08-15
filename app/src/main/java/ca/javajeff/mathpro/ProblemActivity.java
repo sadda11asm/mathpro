@@ -18,14 +18,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
+import com.liuguangqiang.swipeback.SwipeBackActivity;
+import com.liuguangqiang.swipeback.SwipeBackLayout;
 import io.github.kexanie.library.MathView;
 
 /**
  * Created by Саддам on 30.07.2017.
  */
 
-public class ProblemActivity extends Activity {
+public class ProblemActivity extends SwipeBackActivity {
 
     private GestureDetectorCompat gesture;
 
@@ -52,11 +53,11 @@ public class ProblemActivity extends Activity {
 
         setContentView(R.layout.activity_problem);
 
-//        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
+        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         ProRef = mFirebaseDatabase.getReference();
-
+//        gesture = new GestureDetectorCompat(this, LearnGesture())
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_displayy);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicatorr);
         mYearDisplay = (TextView) findViewById(R.id.text_year);

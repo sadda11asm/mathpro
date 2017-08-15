@@ -28,7 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.liuguangqiang.swipeback.SwipeBackActivity;
+import com.liuguangqiang.swipeback.SwipeBackLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ import java.util.List;
  * Created by Саддам on 28.07.2017.
  */
 
-public class ListActivity extends Activity implements LlistAdapter.ListAdapterOnClickHandler {
+public class ListActivity extends SwipeBackActivity implements LlistAdapter.ListAdapterOnClickHandler {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference ProRef;
     private TextView mErrorMessageDisplay;
@@ -57,7 +58,7 @@ public class ListActivity extends Activity implements LlistAdapter.ListAdapterOn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_year2);
 
-//        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
+        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         ProRef = mFirebaseDatabase.getReference();

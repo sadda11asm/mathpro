@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.liuguangqiang.swipeback.SwipeBackActivity;
+import com.liuguangqiang.swipeback.SwipeBackLayout;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  * Created by Саддам on 24.07.2017.
  */
 
-public class NameActivity extends Activity implements NameAdapter.NameAdapterOnClickHandler {
+public class NameActivity extends SwipeBackActivity implements NameAdapter.NameAdapterOnClickHandler {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference IntRef;
     private RecyclerView mRecyclerView;
@@ -45,7 +47,7 @@ public class NameActivity extends Activity implements NameAdapter.NameAdapterOnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
 
-//        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
+        setDragEdge(SwipeBackLayout.DragEdge.LEFT);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         IntRef = mFirebaseDatabase.getReference();

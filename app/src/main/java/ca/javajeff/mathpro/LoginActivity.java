@@ -27,6 +27,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        Bundle bundle = getIntent().getExtras();
+        String logInfo;
+        try {
+            logInfo = bundle.getString("logInfo");
+        } catch(Exception e) {
+            logInfo = null;
+        }
+        if (logInfo != null) {
+            Toast.makeText(this, logInfo, Toast.LENGTH_LONG);
+        }
         AccessToken accessToken = AccountKit.getCurrentAccessToken();
         if (accessToken != null) {
             launchAccountActivity();
@@ -72,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onSkip (View view) { launchAccountActivity();}
+
 
     private void launchAccountActivity() {
         Intent intent = new Intent(this, MainActivity.class);
