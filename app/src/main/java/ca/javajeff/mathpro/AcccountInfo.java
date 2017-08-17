@@ -77,6 +77,7 @@ public class AcccountInfo extends SwipeBackActivity {
             ownId.setText(ID);
         } else {
             ownId.setText("You must login to have own ID");
+            ownId.setTextSize(13);
         }
         setData();
 
@@ -161,8 +162,11 @@ public class AcccountInfo extends SwipeBackActivity {
             });
         } else {
             ownName.setText("You need to log in");
+            ownName.setTextSize(13);
             ownCountry.setText("You need to log in");
+            ownCountry.setTextSize(13);
             ownScore.setText("You must log in to have own Score");
+            ownScore.setTextSize(13);
             ownName.setVisibility(View.VISIBLE);
             enterName.setVisibility(View.INVISIBLE);
             addName.setVisibility(View.INVISIBLE);

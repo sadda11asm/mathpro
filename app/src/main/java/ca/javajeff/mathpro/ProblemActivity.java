@@ -1,14 +1,22 @@
 package ca.javajeff.mathpro;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -35,18 +43,19 @@ public class ProblemActivity extends SwipeBackActivity {
     private TextView mYearDisplay;
     private MathView mProblemDisplay;
     private EditText enterSolution;
-    private MathView mSolutionDisplay;
     private Button submitSolution;
     private String predSolution;
     private int numberOf = 0;
     private String problem;
-    private String year;
+    private ArrayList<String> previousNames = new ArrayList<>();
     private ArrayList<String> previousSolutions = new ArrayList<>();
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference ProRef;
     private boolean proshel;
     private SwipeRefreshLayout swipeLayout;
+    private ListView mListView;
+    private ScrollView mScrollView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +71,30 @@ public class ProblemActivity extends SwipeBackActivity {
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicatorr);
         mYearDisplay = (TextView) findViewById(R.id.text_year);
         mProblemDisplay = (MathView) findViewById(R.id.text_problem);
-//        mSolutionDisplay = (MathView) findViewById(R.id.text_solution);
-//        enterSolution = (EditText) findViewById(R.id.solution_enter);
-//        submitSolution = (Button) findViewById(R.id.solution_submit);
-//
+        enterSolution = (EditText) findViewById(R.id.solution_enter);
+        submitSolution = (Button) findViewById(R.id.solution_submit);
+        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        mListView = (ListView) findViewById(R.id.list_solution);
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        setListViewHeightBasedOnChildren(mListView);
+
 //        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_ref);
 
 //        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -85,50 +114,73 @@ public class ProblemActivity extends SwipeBackActivity {
         final DatabaseReference SolutionForProblem = ProSolution.child(type).child(name).child(year).child(number);
         mYearDisplay.setText(year);
         mProblemDisplay.setText(problem);
-//        SolutionForProblem.child("solution").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                showData(dataSnapshot);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//        SolutionForProblem.child("number").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                showData2(dataSnapshot);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//        submitSolution.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (proshel) {
-//                    String solution = enterSolution.getText().toString();
-//                    numberOf++;
-//                    previousSolutions.add(String.valueOf(numberOf) + ". " + solution);
-//                    SolutionForProblem.child("number").setValue(numberOf);
-//                    for (int i = 0; i < previousSolutions.size(); i++) {
-//                        SolutionForProblem.child("solution").child(String.valueOf(i+1)).setValue(previousSolutions.get(i));
-//                    }
-//                    SolutionForProblem.child("number").setValue(numberOf);
-////                  String array2 = previousSolutions.toString();
-////                  mSolutionDisplay.setText("");
-////                  mSolutionDisplay.setText(array2);
-//                    enterSolution.setText("");
-//                }
-//            }
-//
-//
-//        });
+        if (MainActivity.idValue != null) {
+            enterSolution.setHint("Please enter your own solution");
+        } else {
+            enterSolution.setHint("Please enter your name in My Account to enter own solutions with your name or just log in");
+            submitSolution.setVisibility(View.INVISIBLE);
+        }
+        SolutionForProblem.child("solution").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                showData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        SolutionForProblem.child("number").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                showData2(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        submitSolution.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String solution = enterSolution.getText().toString();
+                if (proshel &&(solution != "")) {
+                    numberOf++;
+                    previousSolutions.add(String.valueOf(numberOf) + ". " + solution);
+                    previousNames.add(MainActivity.nameValue);
+                    SolutionForProblem.child("number").setValue(numberOf);
+                    for (int i = 0; i < previousSolutions.size(); i++) {
+                        SolutionForProblem.child("solution").child(String.valueOf(i+1)).child("solution").setValue(previousSolutions.get(i));
+                        try {
+                            SolutionForProblem.child("solution").child(String.valueOf(i+1)).child("name").setValue(previousNames.get(i));
+                        } catch (Exception e) {
+                            SolutionForProblem.child("solution").child(String.valueOf(i+1)).child("name").setValue("Anonymous user");
+                        }
+                    }
+                    SolutionForProblem.child("number").setValue(numberOf);
+                    SolutionAdapter solutionAdapter = new SolutionAdapter(ProblemActivity.this, 1, previousSolutions, previousNames);
+                    mListView.setAdapter(solutionAdapter);
+                    mListView.setItemsCanFocus(true);
+                    enterSolution.setText("");
+                    new CountDownTimer(2000, 250) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            String a = "deeee";
+                        }
+                    }.start();
+                }
+            }
+
+
+        });
 
 
     }
@@ -142,15 +194,40 @@ public class ProblemActivity extends SwipeBackActivity {
         }, 2000);
     }
 
-    private void showData(DataSnapshot dataSnapshot) {
-        mSolutionDisplay.setText("");
-        previousSolutions.clear();
-        for (DataSnapshot ds: dataSnapshot.getChildren()) {
-            previousSolutions.add(ds.getValue().toString() + "                                       ");
-        }
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
 
-        String array = previousSolutions.toString();
-        mSolutionDisplay.setText(array);
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+    private void showData(DataSnapshot dataSnapshot) {
+        previousSolutions.clear();
+        previousNames.clear();
+        for (DataSnapshot ds: dataSnapshot.getChildren()) {
+            if (ds.child("name").getValue() != null && ds.child("name").getValue() != "") {
+                previousSolutions.add(ds.child("solution").getValue().toString());
+                previousNames.add(ds.child("name").getValue().toString());
+                Log.i("name", ds.child("name").getValue().toString());
+            }
+
+        }
+        SolutionAdapter solutionAdapter = new SolutionAdapter(ProblemActivity.this, 1, previousSolutions, previousNames);
+        mListView.setAdapter(solutionAdapter);
+        mListView.setItemsCanFocus(true);
         proshel=true;
     }
     private void showData2(DataSnapshot dataSnapshot) {

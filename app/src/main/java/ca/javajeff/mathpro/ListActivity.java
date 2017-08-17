@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -66,6 +67,15 @@ public class ListActivity extends SwipeBackActivity implements LlistAdapter.List
         mYearDisplay = (TextView) findViewById(R.id.text2);
         mSpinner = (Spinner) findViewById(R.id.spinner2);
         list = (ListView) findViewById(R.id.list_view3);
+        list.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display4);
 
 

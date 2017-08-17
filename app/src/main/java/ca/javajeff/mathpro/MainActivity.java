@@ -123,6 +123,10 @@ import static android.widget.Toast.LENGTH_SHORT;
 
         public TextView id;
         public ImageView idImage;
+        public TextView nameOnHeader;
+        public static String nameValue = new String();
+        public static String idValue = new String();
+        private TextView idShow;
 
 
         @Override
@@ -137,7 +141,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 //            getSupportActionBar().setCustomView(R.layout.abs_layout);
 
             mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_olympiad);
-
             navigation = (NavigationView) findViewById(R.id.navigation_view);
             mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
@@ -180,55 +183,112 @@ import static android.widget.Toast.LENGTH_SHORT;
 
             View header=navigation.getHeaderView(0);
             id = (TextView) header.findViewById(R.id.header_text);
+            nameOnHeader = (TextView) header.findViewById(R.id.name_header);
+            TextView myAccount = (TextView) header.findViewById(R.id.my_account);
+            idShow = (TextView) header.findViewById(R.id.id_show);
             idImage = (ImageView) header.findViewById(R.id.header_image);
+
             idImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     openAccountInfo();
                 }
             });
-            String nottoken = null;
-            try {
-                token = AccountKit.getCurrentAccessToken().getAccountId();
-            } catch (Exception e) {
-                nottoken = "Log in to enter own solutions and have own rating";
-            }
-            try {
-                Toast.makeText(this, token, Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(this, nottoken, Toast.LENGTH_LONG).show();
-            }
-            final String finalToken = token;
-            final String finalNottoken = nottoken;
-            AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
+            myAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onSuccess(Account account) {
-                    accountId = account.getId();
-
-                    PhoneNumber phoneNumber = account.getPhoneNumber();
-                    phone = phoneNumber.toString();
-
-                    email = account.getEmail();
-
-                    try {
-                        id.setText(accountId);
-                    } catch (Exception e) {
-                        id.setText("000000");
-                    }
-                }
-
-                @Override
-                public void onError(AccountKitError accountKitError) {
-                    phone = "You need to log in";
-                    email = "You need to log in";
-                    String toastMessage = accountKitError.getErrorType().getMessage();
-                    try {
-                       id.setText(finalToken);
-                    } catch (Exception e) {
-                        id.setText(finalNottoken);
-                    }
+                public void onClick(View v) {
+                    openAccountInfo();
                 }
             });
+            id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openAccountInfo();
+                }
+            });
+            nameOnHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openAccountInfo();
+                }
+            });
+            try {
+                token = AccountKit.getCurrentAccessToken().getAccountId();
+                Log.i("tokeeen", token);
+            } catch (Exception e) {
+                token=null;
+                Log.i("uff","null");
+            }
+//            try {
+//                Toast.makeText(this, token, Toast.LENGTH_LONG).show();
+//            } catch (Exception e) {
+//                Toast.makeText(this, nottoken, Toast.LENGTH_LONG).show();
+//            }
+            if (token!=null) {
+                DatabaseReference idRef = myRef.child("Profiles").child(token);
+
+                    idRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                String nameOn = dataSnapshot.child("Name").getValue().toString();
+                                idValue =token;
+                                nameValue = nameOn;
+                                nameOnHeader.setText(nameOn);
+                                id.setText(token);
+                            } catch (Exception e) {
+                                nameOnHeader.setText("Please add your name in My Account ");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+            }
+            if (token == null) {
+                navigation.setVisibility(View.INVISIBLE);
+                nameOnHeader.setText("Please log in to have own Name");
+                nameOnHeader.setTextSize(10);
+                id.setText("You do not have own ID");
+                id.setTextSize(10);
+                idValue=null;
+                nameValue=null;
+//                idShow.setVisibility(View.INVISIBLE);
+            }
+            final String finalToken = token;
+//            AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
+//                @Override
+//                public void onSuccess(Account account) {
+//                    accountId = account.getId();
+//                    idValue = accountId;
+//                    PhoneNumber phoneNumber = account.getPhoneNumber();
+//                    phone = phoneNumber.toString();
+//
+//                    email = account.getEmail();
+//
+//                    try {
+//                        id.setText(accountId);
+//                    } catch (Exception e) {
+//                        id.setText("000000");
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(AccountKitError accountKitError) {
+//                    navigation.setVisibility(View.INVISIBLE);
+//                    phone = "You need to log in";
+//                    email = "You need to log in";
+//                    String toastMessage = accountKitError.getErrorType().getMessage();
+//                    try {
+//                       id.setText(finalToken);
+//                    } catch (Exception e) {
+//                        id.setText(finalNottoken);
+//                    }
+//                }
+//            });
 
             navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -236,9 +296,26 @@ import static android.widget.Toast.LENGTH_SHORT;
                     switch (item.getItemId()) {
                         case R.id.nav_log:
                             AccountKit.logOut();
-                            final Intent intent = new Intent(MainActivity.this , LoginActivity.class);
-                            intent.putExtra("logInfo", "If you need to log in again, please use the same type (phone or email)");
-                            startActivity(intent);
+                            idValue=null;
+                            nameValue=null;
+                            new CountDownTimer(2000, 250) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                                    startActivity(intent);
+                                }
+                            }.start();
+//                            intent.putExtra("logInfo", "If you need to log in again, please use the same type (phone or email)");
+                        case R.id.nav_contests:
+                            Intent intentt = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(intentt);
+//                        case R.id.nav_settings:
+//                            final Intent intettt = new Intent(MainActivity.this,SettiingsActivity.class);
                     }
                     return false;
                 }

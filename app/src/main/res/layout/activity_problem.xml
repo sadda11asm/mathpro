@@ -49,39 +49,118 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="40dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="70dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="7dp"
-        tools:layout_editor_absoluteY="96dp">
+        app:layout_constraintVertical_bias="0.587">
 
-        <io.github.kexanie.library.MathView
-            android:id="@+id/text_problem"
-            textSize="40sp"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="1dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorDarkBlue"
-            app:engine="MathJax"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_year"
-            app:layout_constraintVertical_bias="0.0" />
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/solution_submit"
+                android:layout_width="88dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Publish"
+                android:textSize="13sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/solution_enter" />
+
+            <TextView
+                android:id="@+id/Solutions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="7dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Solutions:"
+                android:textColor="@color/colorBlack"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_problem" />
+
+            <io.github.kexanie.library.MathView
+                android:id="@+id/text_problem"
+                textSize="40sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="1dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorDarkBlue"
+                app:engine="MathJax"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <EditText
+                android:id="@+id/solution_enter"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/own_country"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:hint="Please enter your solution"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/list_solution"
+                tools:layout_constraintLeft_toRightOf="@+id/name"
+                tools:layout_constraintTop_toBottomOf="@+id/own_score" />
+
+            <ListView
+                android:id="@+id/list_solution"
+                android:layout_width="0dp"
+                android:layout_height="230dp"
+                android:layout_marginBottom="56dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:headerDividersEnabled="false"
+                android:nestedScrollingEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Solutions"
+                app:layout_constraintVertical_bias="0.0"></ListView>
+        </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
     <android.support.v7.widget.CardView

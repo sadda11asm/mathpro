@@ -7,6 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -21,16 +28,19 @@ public class SolutionAdapter extends ArrayAdapter<String> {
     String year;
     int size;
     Context context;
+    ArrayList<String> namesOnSolution;
     ArrayList<String> titleArray;
-    private final LlistAdapter.ListAdapterOnClickHandler mClickHandler;
+//    private final LlistAdapter.ListAdapterOnClickHandler mClickHandler;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference MyRef;
 
-    public SolutionAdapter(Context c, int resource, ArrayList<String> titles, LlistAdapter.ListAdapterOnClickHandler clickHandler, String selected) {
+    public SolutionAdapter(Context c, int resource, ArrayList<String> titles, ArrayList<String> names) {
         super(c, resource, titles);
-        mClickHandler = clickHandler;
+//        mClickHandler = clickHandler;
+        this.namesOnSolution=names;
         this.context = c;
         this.size=resource;
         this.titleArray = titles;
-        this.year=selected;
         Log.i("deeee", String.valueOf(titleArray));
     }
 
@@ -41,20 +51,24 @@ public class SolutionAdapter extends ArrayAdapter<String> {
 
     public class MyViewHolder {
         MathView myText;
+        TextView myName;
         private int adapterPosition;
 
         MyViewHolder(View v){
 
-            myText=(MathView) v.findViewById(R.id.textlist);
+            myText=(MathView) v.findViewById(R.id.solution);
+            myName=(TextView) v.findViewById(R.id.name_solver);
         }
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        MyViewHolder holder;
+        final MyViewHolder holder;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        MyRef = mFirebaseDatabase.getReference();
         if (row == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = layoutInflater.inflate(R.layout.single_row, parent, false);
+            row = layoutInflater.inflate(R.layout.solution_list_item, parent, false);
             holder = new MyViewHolder(row);
             row.setTag(holder);
         }
@@ -68,27 +82,19 @@ public class SolutionAdapter extends ArrayAdapter<String> {
                             "  \"HTML-CSS\": { linebreaks: { automatic: true } },\n"+
                             "         SVG: { linebreaks: { automatic: true } }\n"+
                             "});");
+
             holder.myText.setText(titleArray.get(position));
         } catch (Exception e) {
             holder.myText.setText("Some problems with Internet connection");
         }
-        pos=position;
-        holder.myText.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Log.i("est", "est");
-                int adapterPosition = position;
-                String item = getItem(position);
-                final Intent intent;
-                intent = new Intent(context, ProblemActivity.class);
-                intent.putExtra("problem", item);
-                intent.putExtra("year", year);
-                String problemForDay = titleArray.get(adapterPosition);
-                mClickHandler.onClick(problemForDay);
-                context.startActivity(intent);
-            }
-        });
+        if (namesOnSolution != null) {
+            holder.myName.setText(namesOnSolution.get(position));
+        } else {
+            holder.myName.setText("Anonymous user");
+        }
+
+        pos=position;
         return row;
     }
 }
