@@ -31,6 +31,9 @@ public class AcccountInfo extends SwipeBackActivity {
     public String theName;
     public String country;
     public String score;
+
+    public String scoreFor;
+    public String scoreAgainst;
     public String ID;
     public EditText enterName;
     public EditText enterCountry;
@@ -122,7 +125,9 @@ public class AcccountInfo extends SwipeBackActivity {
                         country = null;
                     }
                     try {
-                        score = dataSnapshot.child("Score").getValue().toString();
+                        scoreFor = dataSnapshot.child("Score For").getValue().toString();
+                        scoreAgainst = dataSnapshot.child("Score Against").getValue().toString();
+                        score = String.valueOf (Integer.parseInt(scoreFor) + Integer.parseInt(scoreAgainst));
                     } catch (Exception e) {
                         score = null;
                     }

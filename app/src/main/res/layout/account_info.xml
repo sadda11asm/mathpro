@@ -192,28 +192,29 @@
 
     <Button
         android:id="@+id/add_name"
-        android:layout_width="48dp"
-        android:layout_height="34dp"
-        android:layout_marginLeft="14dp"
+        style="@style/com_facebook_button"
+        android:layout_width="53dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Add"
         android:textSize="12dp"
         tools:layout_constraintLeft_toRightOf="@+id/enter_name"
-        android:layout_marginTop="9dp"
         tools:layout_constraintTop_toBottomOf="@+id/own_score" />
 
     <Button
         android:id="@+id/add_country"
-        android:layout_width="48dp"
-        android:layout_height="31dp"
-        android:layout_marginLeft="13dp"
+        style="@style/com_facebook_button"
+        android:layout_width="51dp"
+        android:layout_height="33dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="11dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Add"
         android:textSize="12dp"
         tools:layout_constraintLeft_toRightOf="@+id/enter_country"
-        android:layout_marginTop="13dp"
-        tools:layout_constraintTop_toBottomOf="@+id/own_id"
-        tools2:layout_editor_absoluteX="312dp" />
+        tools:layout_constraintTop_toBottomOf="@+id/own_id" />
 
 
 </android.support.constraint.ConstraintLayout>

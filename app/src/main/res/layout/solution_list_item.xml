@@ -5,12 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:background="@color/colorBack">
 
-        <android.support.v7.widget.CardView xmlns:card_view3="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView
             android:id="@+id/card_view3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,28 +19,94 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
-            card_view3:cardCornerRadius="4dp"
-            card_view3:cardElevation="3dp"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="6dp"
             tools:layout_conversion_absoluteX="0dp"
-            tools:layout_conversion_absoluteY="0dp">
+            tools:layout_conversion_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="0dp">
 
             <TextView
-                android:id="@+id/name_solver"
-                android:layout_width="46dp"
+                android:id="@+id/number"
+                android:layout_width="23dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="290dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="27.5dp"
                 android:fontFamily="sans-serif-condensed"
-                android:text="Name"
-                android:textAlignment="textEnd"
+                android:text="5"
                 android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/plus"
+                android:layout_width="25dp"
+                android:layout_height="17dp"
+                android:layout_marginLeft="75dp"
+                android:textColor="#1FDE0A"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/like_on"
+                android:layout_width="37dp"
+                android:layout_height="19dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/up2" />
+
+            <ImageView
+                android:id="@+id/dislike_off"
+                android:layout_width="28dp"
+                android:layout_height="21dp"
+                android:layout_marginLeft="40dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/down2" />
+
+            <ImageView
+                android:id="@+id/dislike_on"
+                android:layout_width="29dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="40dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/down1" />
+
+            <TextView
+                android:id="@+id/minus"
+                android:layout_width="25dp"
+                android:layout_height="17dp"
+                android:layout_marginLeft="97dp"
+                android:textColor="#F50505"
+                android:textStyle="bold" />
 
             <io.github.kexanie.library.MathView
                 android:id="@+id/solution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:engine="KaTeX"></io.github.kexanie.library.MathView>
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/colorWhite"
+                app:engine="MathJax"></io.github.kexanie.library.MathView>
+
+            <ImageView
+                android:id="@+id/like_off"
+                android:layout_width="35dp"
+                android:layout_height="20dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/up1" />
+
+            <TextView
+                android:id="@+id/name_solver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="125dp"
+                android:layout_marginTop="1dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Name"
+                android:textAlignment="textEnd"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </android.support.v7.widget.CardView>
-    </RelativeLayout>
+    </FrameLayout>
 </LinearLayout>

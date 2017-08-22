@@ -36,17 +36,17 @@
         android:id="@+id/header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/id_show"
         android:layout_marginLeft="32dp"
         android:layout_marginStart="32dp"
+        android:layout_toEndOf="@+id/my_account"
+        android:layout_toRightOf="@+id/my_account"
         android:fontFamily="sans-serif-condensed"
         android:text="My account"
         android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:textStyle="bold"
-        tools:text="Personal Information"
-        android:layout_below="@+id/id_show"
-        android:layout_toRightOf="@+id/my_account"
-        android:layout_toEndOf="@+id/my_account" />
+        tools:text="loading..." />
 
     <TextView
         android:id="@+id/id_show"
@@ -71,7 +71,7 @@
         android:layout_alignStart="@+id/textView4"
         android:layout_below="@+id/textView4"
         android:fontFamily="sans-serif-condensed"
-        android:text="TextView"
+        android:text="loading..."
         android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:textStyle="bold" />

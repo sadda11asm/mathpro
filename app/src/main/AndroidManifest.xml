@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="ca.javajeff.mathpro">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/circles"
@@ -10,53 +13,72 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"
-            android:theme="@style/AppMainTheme"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NameActivity"
-            android:theme="@style/AppMainTheme"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ListActivity"
-            android:theme="@style/AppMainTheme"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AcccountInfo"
-            android:theme="@style/AppMainTheme"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".NameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".ListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".AcccountInfo"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".RatingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".ProblemActivity"
+            android:theme="@style/AppMainTheme" />
 
-        <activity android:name=".ProblemActivity"
-            android:theme="@style/AppMainTheme"
-            />
-
-
-        <meta-data android:name="com.facebook.accountkit.ApplicationName"
+        <meta-data
+            android:name="com.facebook.accountkit.ApplicationName"
             android:value="@string/app_name" />
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.accountkit.ClientToken"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
 
         <activity
             android:name="com.facebook.accountkit.ui.AccountKitActivity"
             android:theme="@style/AppLoginTheme"
             tools:replace="android:theme" />
-
         <activity android:name="com.facebook.accountkit.ui.AccountKitEmailRedirectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/ak_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppMainTheme"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppMainTheme" />
+        <activity
+            android:name=".ScrollingActivity"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -100,21 +100,21 @@ import static android.widget.Toast.LENGTH_SHORT;
     public class MainActivity extends AppCompatActivity implements OlympiadAdapter.OlympiadAdapterOnClickHandler {
 
         private SwipeRefreshLayout swipeLayout;
-        public String[] Data = new String[5];
-        public String[] Data2 = new String[5];
-        private FirebaseDatabase mFirebaseDatabase;
-        private DatabaseReference myRef;
-        private RecyclerView mRecyclerView;
-        private OlympiadAdapter mOlympiadAdapter;
-        private DrawerLayout mDrawerLayout;
-        private ActionBarDrawerToggle mToggle;
+        public static String[] Data = new String[5];
+        public static String[] Data2 = new String[5];
+        public static FirebaseDatabase mFirebaseDatabase;
+        public static DatabaseReference myRef;
+        public static RecyclerView mRecyclerView;
+        public static OlympiadAdapter mOlympiadAdapter;
+        public DrawerLayout mDrawerLayout;
+        public ActionBarDrawerToggle mToggle;
 
-        private TextView mErrorMessageDisplay;
+        public static TextView mErrorMessageDisplay;
 //        public TextView header;
 
-        private ProgressBar mLoadingIndicator;
-        private Toolbar mToolBar;
-        private NavigationView navigation;
+        public static ProgressBar mLoadingIndicator;
+        public Toolbar mToolBar;
+        public NavigationView navigation;
 
         public String phone;
         public String email;
@@ -126,7 +126,7 @@ import static android.widget.Toast.LENGTH_SHORT;
         public TextView nameOnHeader;
         public static String nameValue = new String();
         public static String idValue = new String();
-        private TextView idShow;
+        public TextView idShow;
 
 
         @Override
@@ -312,8 +312,14 @@ import static android.widget.Toast.LENGTH_SHORT;
                             }.start();
 //                            intent.putExtra("logInfo", "If you need to log in again, please use the same type (phone or email)");
                         case R.id.nav_contests:
-                            Intent intentt = new Intent(MainActivity.this, MainActivity.class);
-                            startActivity(intentt);
+                            Intent contest = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(contest);
+                        case R.id.nav_rating:
+                            Intent rating = new Intent(MainActivity.this, RatingActivity.class);
+                            startActivity(rating);
+//                        case R.id.nav_solutions:
+//                            Intent intentttt = new Intent(MainActivity.class, MySolutions.class);
+//                            startActivity(intentttt);
 //                        case R.id.nav_settings:
 //                            final Intent intettt = new Intent(MainActivity.this,SettiingsActivity.class);
                     }
@@ -329,75 +335,53 @@ import static android.widget.Toast.LENGTH_SHORT;
              new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mOlympiadAdapter.setProblemData(null, null);
+                    mOlympiadAdapter = new OlympiadAdapter(MainActivity.this);
+                    mOlympiadAdapter.setShowData(null);
+                    mOlympiadAdapter.setProblemData(null);
                     loadProblemData();
                     swipeLayout.setRefreshing(false);
                 }
             }, 2000);
         }
-        private void showData(DataSnapshot dataSnapshot, Integer i) {
+        private static void showData(DataSnapshot dataSnapshot, Integer i) {
 //              for (DataSnapshot ds: dataSnapshot.getChildren()) {
             String[] types= {"International olympiads", "Olympiads for Junior students", "National olympiads", "Team Selection Tests", "Undergraduate olympiads", "Latest contests"};
             String key = dataSnapshot.getKey();
             Data[i] = types[i];
             Data2[i] = key;
-//                    String zadacha = ds.child("uslovie").getValue().toString();
-//                    Data[i] += "                 " + zadacha;
-//
-//                    String Data2 = Data[i];
-//                    boolean[] used = new boolean[100100];
-//                    for (int j=1;j < Data2.length()-1;j++) {
-//                        if (Data2.charAt(j) == '$' && Data2.charAt(j+1) != '$' && Data2.charAt(j-1) != '$') {
-//                            used[j] = true;
-//                        }
-//                    }
-//                    String DataNew = null;
-//                    int k=0;
-//                    for(int j = 0;j < Data2.length();j ++) {
-//                        if(used[j]) {
-//                            if (k==0) {
-//                                DataNew += "\\(";
-//                                k =1;
-//                            }
-//                            else {
-//                                DataNew +="\\)";
-//                                k=0;
-//                            }
-//                        }
-//                        else{
-//                            DataNew += Data2.charAt(j);
-//                        }
-//                    }
-//                    Data[i] = DataNew + "\r\n";
             Log.i("dfsdf", Data[i]);
-//                }
-            new CountDownTimer(4000, 250) {
-                @Override
-                public void onTick(long millisUntilFinished) {
 
-                }
-
-                @Override
-                public void onFinish() {
+            if (i==4) {
+                if (Data2[0] != null && Data2[1] != null && Data2[2] != null && Data2[3] != null && Data2[4] != null) {
                     mLoadingIndicator.setVisibility(View.INVISIBLE);
-                    if (Data != null) {
-                        showProblemDataView();
-                        mOlympiadAdapter.setProblemData(Data, Data2 );
-                    } else {
-                        showErrorMessage();
-                    }
+                    showProblemDataView();
+                    mOlympiadAdapter.setShowData(Data);
+                    mOlympiadAdapter.setProblemData(Data2);
+                } else {
+                    showErrorMessage();
                 }
-            }.start();
+            }
+//                }
         }
 
-        public void firebaseData() {
+        public static void firebaseData() {
             String[] typesForBase = {"international", "junior", "national", "tst", "undergraduate"};
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()) {
+                        Log.i("dss", ds.toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
             mLoadingIndicator.setVisibility(View.VISIBLE);
             for (int index = 0; index < 5; index ++) {
-                DatabaseReference indexx = myRef.child(typesForBase[index]);// types of olympiad
-//                    DatabaseReference indexxx = indexx.child(String.valueOf(0));//names of olympiad
-//                    DatabaseReference indexxxx = indexxx.ch1ild(String.valueOf(1));//year of olympiad
-                if (0 == 0) {
+                    DatabaseReference indexx = myRef.child(typesForBase[index]);// types of olympiad
                     final int finalIndex = index;
 
                     indexx.addValueEventListener(new ValueEventListener() {
@@ -411,7 +395,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
                         }
                     });
-                }
             }
         }
 
@@ -419,10 +402,8 @@ import static android.widget.Toast.LENGTH_SHORT;
          * This method will get the user's preferred location for problem, and then tell some
          * background method to get the problem data in the background.
          */
-        private void loadProblemData() {
+        public static void loadProblemData() {
             showProblemDataView();
-            String location = "Kazakhstan, Almaty";
-//            new FetchProblemTask().execute(location);
             firebaseData();
         }
         @Override
@@ -439,7 +420,7 @@ import static android.widget.Toast.LENGTH_SHORT;
          * Since it is okay to redundantly set the visibility of a View, we don't
          * need to check whether each view is currently visible or invisible.
          */
-        private void showProblemDataView() {
+        private static void showProblemDataView() {
         /* First, make sure the error is invisible */
             mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the problem data is visible */
@@ -460,7 +441,7 @@ import static android.widget.Toast.LENGTH_SHORT;
          * Since it is okay to redundantly set the visibility of a View, we don't
          * need to check whether each view is currently visible or invisible.
          */
-        private void showErrorMessage() {
+        private static void showErrorMessage() {
         /* First, hide the currently visible data */
             mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */

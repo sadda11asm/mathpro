@@ -24,6 +24,8 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
     private String[] mProblemData;
     private String[] mProblemData2;
     private ImageView intern;
+    public static String key;
+    public static String type;
 
     private final OlympiadAdapterOnClickHandler mClickHandler;
 
@@ -67,22 +69,33 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
                     case 0:
                         intent.putExtra("type", mProblemData[0]);
                         intent.putExtra("key1", mProblemData2[0]);
+                        key=mProblemData2[0];
+                        type=mProblemData[0];
+
                         break;
                     case 1:
                         intent.putExtra("type", mProblemData[1]);
                         intent.putExtra("key1", mProblemData2[1]);
+                        key=mProblemData2[1];
+                        type=mProblemData[1];
                         break;
                     case 2:
                         intent.putExtra("type", mProblemData[2]);
                         intent.putExtra("key1", mProblemData2[2]);
+                        key=mProblemData2[2];
+                        type=mProblemData[2];
                         break;
                     case 3:
                         intent.putExtra("type", mProblemData[3]);
                         intent.putExtra("key1", mProblemData2[3]);
+                        key=mProblemData2[3];
+                        type=mProblemData[3];
                         break;
                     default:
                         intent.putExtra("type", mProblemData[4]);
                         intent.putExtra("key1", mProblemData2[4]);
+                        key=mProblemData2[4];
+                        type=mProblemData[4];
                         break;
                 }
                 String problemForDay = mProblemData[adapterPosition];
@@ -156,9 +169,11 @@ public class OlympiadAdapter  extends RecyclerView.Adapter<OlympiadAdapter.Olymp
      *
      * @param problemData The new problem data to be displayed.
      */
-    public void setProblemData(String[] problemData, String[] problemData2) {
-        mProblemData = problemData;
+    public void setProblemData(String[] problemData2) {
         mProblemData2 = problemData2;
+    }
+    public void setShowData(String[] problemData) {
+        mProblemData = problemData;
         notifyDataSetChanged();
     }
 }

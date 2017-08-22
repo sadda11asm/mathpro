@@ -39,10 +39,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        android:background="@color/colorWhitee"
+        android:background="@color/colorPrimary"
         android:text="For better view of the problem change the orientation "
         android:textAlignment="center"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorWhite"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -52,10 +52,10 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="42dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="70dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"
@@ -71,11 +71,13 @@
 
             <Button
                 android:id="@+id/solution_submit"
-                android:layout_width="88dp"
-                android:layout_height="48dp"
+                style="@style/com_facebook_button"
+                android:layout_width="77dp"
+                android:layout_height="37dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:enabled="false"
                 android:fontFamily="sans-serif-condensed"
                 android:text="Publish"
                 android:textSize="13sp"
@@ -88,14 +90,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="sans-serif-condensed"
                 android:text="Solutions:"
                 android:textColor="@color/colorBlack"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_problem" />
+                app:layout_constraintTop_toBottomOf="@+id/solution_enter" />
 
             <io.github.kexanie.library.MathView
                 android:id="@+id/text_problem"
@@ -121,8 +123,9 @@
 
             <EditText
                 android:id="@+id/solution_enter"
+                style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/own_country"
@@ -135,18 +138,18 @@
                 android:hint="Please enter your solution"
                 android:textColor="@color/colorBlack"
                 android:textSize="16sp"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/list_solution"
+                app:layout_constraintTop_toBottomOf="@+id/text_problem"
                 tools:layout_constraintLeft_toRightOf="@+id/name"
                 tools:layout_constraintTop_toBottomOf="@+id/own_score" />
 
             <ListView
                 android:id="@+id/list_solution"
-                android:layout_width="0dp"
-                android:layout_height="230dp"
-                android:layout_marginBottom="56dp"
-                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="338dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
                 android:clickable="false"
@@ -155,10 +158,10 @@
                 android:headerDividersEnabled="false"
                 android:nestedScrollingEnabled="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Solutions"
+                app:layout_constraintTop_toBottomOf="@+id/solution_submit"
                 app:layout_constraintVertical_bias="0.0"></ListView>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
