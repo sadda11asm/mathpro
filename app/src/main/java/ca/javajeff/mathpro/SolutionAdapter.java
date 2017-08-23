@@ -165,51 +165,49 @@ public class SolutionAdapter extends ArrayAdapter<String> {
 
                     }
                 });
-
-                numberOfSolution.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        int est=0;
-                        int disest=0;
-                        int disvalue=0;
-                        int value = 0;
-                        for (DataSnapshot ds:dataSnapshot.child("liked").getChildren()) {
-                            Log.i("keyyy", ds.getKey());
-                            Log.i("idValue", MainActivity.idValue);
-                            Log.i("value", ds.getValue().toString());
-                            if (MainActivity.idValue.equals(ds.getKey())) {
-                                est=1;
-                                value = Integer.parseInt(ds.getValue().toString());
-                            } else {
-                                est=0;
+                if (MainActivity.idValue!=null) {
+                    numberOfSolution.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int est = 0;
+                            int disest = 0;
+                            int disvalue = 0;
+                            int value = 0;
+                            for (DataSnapshot ds : dataSnapshot.child("liked").getChildren()) {
+                                if (MainActivity.idValue.equals(ds.getKey())) {
+                                    est = 1;
+                                    value = Integer.parseInt(ds.getValue().toString());
+                                } else {
+                                    est = 0;
+                                }
+                                Log.i("qwert", String.valueOf(est + value));
                             }
-                            Log.i("qwert", String.valueOf(est+value));
-                        }
-                        if (est==1 && value == 1) {
-                            liked[0]=1;
-                        } else {
-                            liked[0]=0;
-                        }
-                        for (DataSnapshot ds:dataSnapshot.child("disliked").getChildren()) {
-                            if (MainActivity.idValue.equals(ds.getKey())) {
-                                disest=1;
-                                disvalue= Integer.parseInt(ds.getValue().toString());
+                            if (est == 1 && value == 1) {
+                                liked[0] = 1;
                             } else {
-                                disest=0;
+                                liked[0] = 0;
+                            }
+                            for (DataSnapshot ds : dataSnapshot.child("disliked").getChildren()) {
+                                if (MainActivity.idValue.equals(ds.getKey())) {
+                                    disest = 1;
+                                    disvalue = Integer.parseInt(ds.getValue().toString());
+                                } else {
+                                    disest = 0;
+                                }
+                            }
+                            if (disest == 1 && disvalue == 1) {
+                                disliked[0] = 1;
+                            } else {
+                                disliked[0] = 0;
                             }
                         }
-                        if (disest==1 && disvalue ==1) {
-                            disliked[0]=1;
-                        } else {
-                            disliked[0]=0;
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                    });
+                }
 
                 profiles.child(idArray.get(position)).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -249,36 +247,42 @@ public class SolutionAdapter extends ArrayAdapter<String> {
                 } else {
                     holder.myName.setText("Anonymous user");
                 }
-
-                if (liked[0]==0) {
-                    holder.likeOn.setVisibility(View.INVISIBLE);
-                    holder.likeOff.setVisibility(View.VISIBLE);
-                }
-                if (liked[0]==1) {
-                    holder.likeOn.setVisibility(View.VISIBLE);
-                    holder.likeOff.setVisibility(View.INVISIBLE);
-                }
-                if (disliked[0]==0) {
-                    holder.dislikeOn.setVisibility(View.INVISIBLE);
+                if (MainActivity.idValue!=null) {
+                    if (liked[0] == 0) {
+                        holder.likeOn.setVisibility(View.INVISIBLE);
+                        holder.likeOff.setVisibility(View.VISIBLE);
+                    }
+                    if (liked[0] == 1) {
+                        holder.likeOn.setVisibility(View.VISIBLE);
+                        holder.likeOff.setVisibility(View.INVISIBLE);
+                    }
+                    if (disliked[0] == 0) {
+                        holder.dislikeOn.setVisibility(View.INVISIBLE);
+                        holder.dislikeOff.setVisibility(View.VISIBLE);
+                    }
+                    if (disliked[0] == 1) {
+                        holder.dislikeOn.setVisibility(View.VISIBLE);
+                        holder.dislikeOff.setVisibility(View.INVISIBLE);
+                    }
+                } else {
                     holder.dislikeOff.setVisibility(View.VISIBLE);
-                }
-                if (disliked[0]==1) {
-                    holder.dislikeOn.setVisibility(View.VISIBLE);
-                    holder.dislikeOff.setVisibility(View.INVISIBLE);
+                    holder.dislikeOn.setEnabled(false);
+                    holder.likeOff.setVisibility(View.VISIBLE);
+                    holder.likeOn.setEnabled(false);
                 }
             }
         }
         new loading().execute(type);
-
+        if (MainActivity.idValue!=null) {
             holder.likeOff.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (liked[0]==0) {
+                    if (liked[0] == 0) {
                         holder.likeOff.setVisibility(View.INVISIBLE);
                         holder.likeOn.setVisibility(View.VISIBLE);
                         numberOfSolution.child("liked").child(MainActivity.idValue).setValue("1");
-                        numberOfSolution.child("Score For").setValue(String.valueOf(permanentScoreFor[0]+1));
-                        profiles.child(idArray.get(position)).child("Score For").setValue(String.valueOf(overallScoreFor[0]+1));
+                        numberOfSolution.child("Score For").setValue(String.valueOf(permanentScoreFor[0] + 1));
+                        profiles.child(idArray.get(position)).child("Score For").setValue(String.valueOf(overallScoreFor[0] + 1));
                         new CountDownTimer(1000, 250) {
                             @Override
                             public void onTick(long millisUntilFinished) {
@@ -298,12 +302,12 @@ public class SolutionAdapter extends ArrayAdapter<String> {
             holder.likeOn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (liked[0]==1) {
+                    if (liked[0] == 1) {
                         holder.likeOn.setVisibility(View.INVISIBLE);
                         holder.likeOff.setVisibility(View.VISIBLE);
                         numberOfSolution.child("liked").child(MainActivity.idValue).setValue("0");
                         numberOfSolution.child("Score For").setValue(String.valueOf(permanentScoreFor[0] - 1));
-                        profiles.child(idArray.get(position)).child("Score For").setValue(String.valueOf(overallScoreFor[0]-1));
+                        profiles.child(idArray.get(position)).child("Score For").setValue(String.valueOf(overallScoreFor[0] - 1));
                         new loading().execute(number);
                         Log.i("asdfg", String.valueOf(liked[0]));
                     }
@@ -314,13 +318,13 @@ public class SolutionAdapter extends ArrayAdapter<String> {
             holder.dislikeOff.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (disliked[0]==0) {
+                    if (disliked[0] == 0) {
                         holder.dislikeOff.setVisibility(View.INVISIBLE);
                         holder.dislikeOn.setVisibility(View.VISIBLE);
                         numberOfSolution.child("disliked").child(MainActivity.idValue).setValue("1");
                         disliked[0] = 1;
                         numberOfSolution.child("Score Against").setValue(String.valueOf(permanentScoreMinus[0] - 1));
-                        profiles.child(idArray.get(position)).child("Score Against").setValue(String.valueOf(overallScoreAgainst[0]-1));
+                        profiles.child(idArray.get(position)).child("Score Against").setValue(String.valueOf(overallScoreAgainst[0] - 1));
                         new loading().execute(number);
                     }
                 }
@@ -330,16 +334,17 @@ public class SolutionAdapter extends ArrayAdapter<String> {
             holder.dislikeOn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (disliked[0]==1) {
+                    if (disliked[0] == 1) {
                         holder.dislikeOff.setVisibility(View.VISIBLE);
                         holder.dislikeOn.setVisibility(View.INVISIBLE);
                         numberOfSolution.child("disliked").child(MainActivity.idValue).setValue("0");
                         numberOfSolution.child("Score Against").setValue(String.valueOf(permanentScoreMinus[0] + 1));
-                        profiles.child(idArray.get(position)).child("Score Against").setValue(String.valueOf(overallScoreAgainst[0]+1));
+                        profiles.child(idArray.get(position)).child("Score Against").setValue(String.valueOf(overallScoreAgainst[0] + 1));
                         new loading().execute(number);
                     }
                 }
             });
+        }
 
         return row;
     }

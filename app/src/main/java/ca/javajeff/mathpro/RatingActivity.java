@@ -67,7 +67,11 @@ public class RatingActivity extends SwipeBackActivity implements RatingAdapter.R
                     } catch (Exception e) {
                         scores.add(0);
                     }
-                    names.add(ds.child("Name").getValue().toString());
+                    try {
+                        names.add(ds.child("Name").getValue().toString());
+                    } catch (Exception e) {
+                        names.add("Anonymous user");
+                    }
                 }
                 score = new int[scores.size()];
                 name = new String[names.size()];

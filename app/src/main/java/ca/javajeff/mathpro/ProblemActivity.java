@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -135,10 +136,26 @@ public class ProblemActivity extends SwipeBackActivity {
         final DatabaseReference profiles = ProRef.child("Profiles");
         final DatabaseReference SolutionForProblem = ProSolution.child(type).child(name).child(year).child(number);
 
+        if(MainActivity.idValue==null) {
+            Toast.makeText(this, "You must register or log in to upvote and downvote others' solutions", Toast.LENGTH_LONG).show();
+        }
+
         class loadingg extends AsyncTask<String, Integer, String> {
 
             @Override
             protected String doInBackground(String... params) {
+                SolutionForProblem.child("number").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        showData2(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 SolutionForProblem.child("solution").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -146,9 +163,21 @@ public class ProblemActivity extends SwipeBackActivity {
                         previousNames.clear();
                         previousSolutions.clear();
                         for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                            previousSolutions.add(ds.child("solution").getValue().toString());
-                            previousNames.add(ds.child("name").getValue().toString());
-                            previousIds.add(ds.child("id").getValue().toString());
+                            try {
+                                previousSolutions.add(ds.child("solution").getValue().toString());
+                            } catch(Exception e) {
+                                previousSolutions.add("loading...");
+                            }
+                            try {
+                                previousNames.add(ds.child("name").getValue().toString());
+                            } catch(Exception e) {
+                                previousNames.add("loading...");
+                            }
+                            try {
+                                previousIds.add(ds.child("id").getValue().toString());
+                            } catch(Exception e) {
+                                previousIds.add("0");
+                            }
                         }
                     }
                     @Override
@@ -165,10 +194,12 @@ public class ProblemActivity extends SwipeBackActivity {
             }
             @Override
             protected void onPostExecute(String idOf) {
+                Log.i("vPostExecute", "1");
                 super.onPostExecute(idOf);
-                SolutionAdapter solutionAdapter = new SolutionAdapter(ProblemActivity.this, 1, previousSolutions, previousNames, previousIds, type, name, year, number);
+                SolutionAdapter solutionAdapter = new SolutionAdapter(ProblemActivity.this, previousSolutions.size(), previousSolutions, previousNames, previousIds, type, name, year, number);
                 mListView.setAdapter(solutionAdapter);
                 mListView.setItemsCanFocus(true);
+//                justifyListViewHeightBasedOnChildren(mListView);
             }
         }
 
@@ -200,6 +231,7 @@ public class ProblemActivity extends SwipeBackActivity {
         });
         enterSolution.setImeActionLabel("Custom text", KeyEvent.KEYCODE_ENTER);
         new loadingg().execute(String.valueOf(numberOf));
+//        justifyListViewHeightBasedOnChildren(mListView);
         Log.i("zdesIds", previousIds.toString());
 
 
@@ -209,6 +241,7 @@ public class ProblemActivity extends SwipeBackActivity {
             public void onClick(View v) {
                 String solution = enterSolution.getText().toString();
                 numberOf++;
+                SolutionForProblem.child("number").setValue(String.valueOf(numberOf));
                 SolutionForProblem.child("solution").child(String.valueOf(numberOf)).child("name").setValue(MainActivity.nameValue);
                 SolutionForProblem.child("solution").child(String.valueOf(numberOf)).child("id").setValue(MainActivity.idValue);
                 SolutionForProblem.child("solution").child(String.valueOf(numberOf)).child("solution").setValue(solution);
@@ -222,6 +255,26 @@ public class ProblemActivity extends SwipeBackActivity {
 
     }
 
+    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
     private void refreshContent(){
         new Handler().postDelayed(new Runnable() {
             @Override

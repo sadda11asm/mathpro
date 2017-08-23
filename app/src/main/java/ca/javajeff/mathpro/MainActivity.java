@@ -301,7 +301,7 @@ import static android.widget.Toast.LENGTH_SHORT;
                             new CountDownTimer(2000, 250) {
                                 @Override
                                 public void onTick(long millisUntilFinished) {
-
+                                    Toast.makeText(MainActivity.this, "Use the same method of logging in to enter your account back", Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
@@ -310,18 +310,12 @@ import static android.widget.Toast.LENGTH_SHORT;
                                     startActivity(intent);
                                 }
                             }.start();
-//                            intent.putExtra("logInfo", "If you need to log in again, please use the same type (phone or email)");
-                        case R.id.nav_contests:
-                            Intent contest = new Intent(MainActivity.this, MainActivity.class);
-                            startActivity(contest);
                         case R.id.nav_rating:
                             Intent rating = new Intent(MainActivity.this, RatingActivity.class);
                             startActivity(rating);
-//                        case R.id.nav_solutions:
-//                            Intent intentttt = new Intent(MainActivity.class, MySolutions.class);
-//                            startActivity(intentttt);
-//                        case R.id.nav_settings:
-//                            final Intent intettt = new Intent(MainActivity.this,SettiingsActivity.class);
+                        case R.id.nav_contests:
+                            Intent contest = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(contest);
                     }
                     return false;
                 }

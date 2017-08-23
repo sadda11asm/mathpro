@@ -324,7 +324,7 @@ public class ListActivity extends SwipeBackActivity implements LlistAdapter.List
             public void onItemSelected(AdapterView<?> parent, final View view, int pos, long id) {
                 final String selected = mSpinner.getSelectedItem().toString();
                 firebaseData2(keyofType, keyofName, selected);
-                new CountDownTimer(4000, 250) {
+                new CountDownTimer(2000, 250) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         list.setVisibility(View.INVISIBLE);
